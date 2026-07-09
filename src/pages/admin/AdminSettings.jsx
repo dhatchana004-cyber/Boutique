@@ -1,0 +1,172 @@
+import { useState } from 'react'
+import api from '../../services/api'
+import { KeyRound, ShieldAlert, CheckCircle, Eye, EyeOff } from 'lucide-react'
+
+export default function AdminSettings() {
+  const [currentPassword, setCurrentPassword] = useState('')
+  const [newPassword, setNewPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
+
+  const [showCurrent, setShowCurrent] = useState(false)
+  const [showNew, setShowNew] = useState(false)
+  const [showConfirm, setShowConfirm] = useState(false)
+
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
+  const [success, setSuccess] = useState('')
+
+  const handlePasswordChange = async (e) => {
+    e.preventDefault()
+    setError('')
+    setSuccess('')
+
+    if (!currentPassword || !newPassword || !confirmPassword) {
+      setError('Please fill in all fields')
+      return
+    }
+
+    if (newPassword.length < 6) {
+      setError('New password must be at least 6 characters long')
+      return
+    }
+
+    if (newPassword !== confirmPassword) {
+      setError('New passwords do not match')
+      return
+    }
+
+    setLoading(true)
+    try {
+      const res = await api.post('/auth/change-password', {
+        currentPassword,
+        newPassword
+      })
+
+      if (res.data.success) {
+        setSuccess('Password updated successfully!')
+        setCurrentPassword('')
+        setNewPassword('')
+        setConfirmPassword('')
+      } else {
+        setError(res.data.message || 'Failed to update password')
+      }
+    } catch (err) {
+      setError(err.response?.data?.message || 'Error updating password')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  return (
+    <div className="max-w-2xl bg-[#000000] rounded-3xl p-8 shadow-sm border border-[#333333]">
+      <div className="flex items-center gap-3 mb-6">
+        <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center text-[#D4AF37]">
+          <KeyRound size={20} />
+        </div>
+        <div>
+          <h2 className="text-lg font-black text-gray-100">Security Settings</h2>
+          <p className="text-xs text-gray-400">Update your administrator password here</p>
+        </div>
+      </div>
+
+      {error && (
+        <div className="mb-6 bg-red-50 border border-red-100 rounded-2xl p-4 flex items-start gap-3">
+          <ShieldAlert className="text-red-500 flex-shrink-0 mt-0.5" size={18} />
+          <p className="text-red-600 text-xs font-semibold">{error}</p>
+        </div>
+      )}
+
+      {success && (
+        <div className="mb-6 bg-emerald-50 border border-emerald-100 rounded-2xl p-4 flex items-start gap-3">
+          <CheckCircle className="text-emerald-500 flex-shrink-0 mt-0.5" size={18} />
+          <p className="text-emerald-600 text-xs font-semibold">{success}</p>
+        </div>
+      )}
+
+      <form onSubmit={handlePasswordChange} className="space-y-5">
+        {/* Current Password */}
+        <div>
+          <label className="text-xs font-bold tracking-widest uppercase text-gray-400 mb-1.5 block">
+            Current Password
+          </label>
+          <div className="relative">
+            <input
+              type={showCurrent ? 'text' : 'password'}
+              placeholder="••••••••"
+              value={currentPassword}
+              onChange={(e) => setCurrentPassword(e.target.value)}
+              className="w-full border border-[#444444] rounded-xl pl-4 pr-11 py-3 text-sm
+                outline-none focus:border-blue-600 transition-colors"
+            />
+            <button
+              type="button"
+              onClick={() => setShowCurrent(!showCurrent)}
+              className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-400"
+            >
+              {showCurrent ? <EyeOff size={16} /> : <Eye size={16} />}
+            </button>
+          </div>
+        </div>
+
+        {/* New Password */}
+        <div>
+          <label className="text-xs font-bold tracking-widest uppercase text-gray-400 mb-1.5 block">
+            New Password
+          </label>
+          <div className="relative">
+            <input
+              type={showNew ? 'text' : 'password'}
+              placeholder="••••••••"
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+              className="w-full border border-[#444444] rounded-xl pl-4 pr-11 py-3 text-sm
+                outline-none focus:border-blue-600 transition-colors"
+            />
+            <button
+              type="button"
+              onClick={() => setShowNew(!showNew)}
+              className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-400"
+            >
+              {showNew ? <EyeOff size={16} /> : <Eye size={16} />}
+            </button>
+          </div>
+        </div>
+
+        {/* Confirm New Password */}
+        <div>
+          <label className="text-xs font-bold tracking-widest uppercase text-gray-400 mb-1.5 block">
+            Confirm New Password
+          </label>
+          <div className="relative">
+            <input
+              type={showConfirm ? 'text' : 'password'}
+              placeholder="••••••••"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              className="w-full border border-[#444444] rounded-xl pl-4 pr-11 py-3 text-sm
+                outline-none focus:border-blue-600 transition-colors"
+            />
+            <button
+              type="button"
+              onClick={() => setShowConfirm(!showConfirm)}
+              className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-400"
+            >
+              {showConfirm ? <EyeOff size={16} /> : <Eye size={16} />}
+            </button>
+          </div>
+        </div>
+
+        {/* Action Button */}
+        <button
+          type="submit"
+          disabled={loading}
+          className="px-6 py-3.5 bg-[#D4AF37] text-white font-bold text-xs
+            tracking-widest uppercase rounded-xl hover:bg-blue-700
+            transition-all disabled:opacity-60 disabled:cursor-not-allowed"
+        >
+          {loading ? 'Updating...' : 'Update Password'}
+        </button>
+      </form>
+    </div>
+  )
+}
