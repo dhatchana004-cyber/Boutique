@@ -13,6 +13,8 @@ import {
   ChevronDown
 } from 'lucide-react'
 
+import { useSiteContent } from '../hooks/useSiteContent'
+
 export default function ContactPage() {
   const [formData, setFormData] = useState({
     firstName: '',
@@ -22,6 +24,13 @@ export default function ContactPage() {
     message: ''
   })
   const [isSubmitted, setIsSubmitted] = useState(false)
+  
+  const { content } = useSiteContent('contact', {
+    headerTag: 'Get In Touch', headerTitle: 'Connect With Us', headerDesc: 'Whether you seek a bespoke bridal design, wish to explore corporate return gifts, or desire a personal boutique walkthrough, our concierge team is at your service.',
+    address: 'Door No. 4/77/A, Happy Down,\nSalaiyar, Nandhavanapatty,\nOld Karur Road, Dindigul - 624 005.', phone1: '+91 93441 49236', phone2: '+91 93604 35871',
+    email: 'concierge@vedhika.co.in', hours: 'Mon - Sat: 10:00 AM - 8:00 PM\nSunday: By Appointment Only',
+    formTitle: 'Send a Message', formDesc: 'Bespoke consultations and enquiries', storeImage: ''
+  })
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value })
@@ -67,14 +76,14 @@ export default function ContactPage() {
           transition={{ duration: 0.8, ease: "easeOut" }}
           className="text-center max-w-2xl mx-auto mb-16 md:mb-24"
         >
-          <span className="text-[10px] font-sans font-semibold tracking-[0.3em] uppercase text-[#D4AF37] mb-4 block">
-            Get In Touch
+          <span className="inline-block text-[9px] font-sans font-bold tracking-[0.3em] text-[#D4AF37] mb-4 bg-[#D4AF37]/10 px-3 py-1 rounded-sm uppercase">
+            {content.headerTag}
           </span>
           <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl text-[#FFFFFF] font-light mb-6 tracking-wide leading-tight">
-            Connect With Us
+            {content.headerTitle}
           </h1>
           <p className="font-sans text-sm md:text-base text-[#6E6E6E] leading-relaxed font-light">
-            Whether you seek a bespoke bridal design, wish to explore corporate return gifts, or desire a personal boutique walkthrough, our concierge team is at your service.
+            {content.headerDesc}
           </p>
         </motion.div>
 
@@ -100,10 +109,8 @@ export default function ContactPage() {
                 <h3 className="text-[10px] font-sans font-semibold tracking-[0.2em] uppercase text-[#FFFFFF] mb-2.5">
                   Flagship Boutique
                 </h3>
-                <div className="font-sans text-sm text-white/60 leading-relaxed font-light">
-                  <p>Door No. 4/77/A, Happy Down,</p>
-                  <p>Salaiyar, Nandhavanapatty,</p>
-                  <p>Old Karur Road, Dindigul - 624 005.</p>
+                <div className="font-sans text-sm text-white/60 leading-relaxed font-light whitespace-pre-line">
+                  <p>{content.address}</p>
                 </div>
                 <a 
                   href="https://www.google.com/maps/search/?api=1&query=Vedhika+%26+Co+Nandhavanapatty+Old+Karur+Road+Dindigul" 
@@ -130,8 +137,8 @@ export default function ContactPage() {
                   Concierge
                 </h3>
                 <div className="font-sans text-sm text-white/60 leading-relaxed font-light mb-3">
-                  <p className="hover:text-[#D4AF37] transition-colors"><a href="tel:+919344149236">+91 93441 49236</a></p>
-                  <p className="hover:text-[#D4AF37] transition-colors"><a href="tel:+919360435871">+91 93604 35871</a></p>
+                  <p className="hover:text-[#D4AF37] transition-colors"><a href={`tel:${content.phone1.replace(/\s+/g, '')}`}>{content.phone1}</a></p>
+                  {content.phone2 && <p className="hover:text-[#D4AF37] transition-colors"><a href={`tel:${content.phone2.replace(/\s+/g, '')}`}>{content.phone2}</a></p>}
                 </div>
                 <div className="border-t border-white/10/60 pt-3.5 mt-3.5">
                   <p className="font-sans text-xs text-[#D4AF37] mb-3.5">
@@ -163,11 +170,8 @@ export default function ContactPage() {
                   Write To Us
                 </h3>
                 <div className="font-sans text-sm leading-relaxed flex flex-col gap-2 font-light">
-                  <a href="mailto:hello@vedhikabrand.com" className="text-white/60 hover:text-[#D4AF37] transition-colors flex items-center gap-1.5">
-                    hello@vedhikabrand.com <ExternalLink className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
-                  </a>
-                  <a href="mailto:press@vedhikabrand.com" className="text-[#D4AF37] hover:text-[#D4AF37] transition-colors flex items-center gap-1.5">
-                    press@vedhikabrand.com <ExternalLink className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <a href={`mailto:${content.email}`} className="text-white/60 hover:text-[#D4AF37] transition-colors flex items-center gap-1.5">
+                    {content.email} <ExternalLink className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
                   </a>
                 </div>
               </div>
@@ -185,9 +189,8 @@ export default function ContactPage() {
                 <h3 className="text-[10px] font-sans font-semibold tracking-[0.2em] uppercase text-[#FFFFFF] mb-2.5">
                   Boutique Hours
                 </h3>
-                <div className="font-sans text-sm text-white/60 leading-relaxed font-light">
-                  <p className="flex justify-between gap-4"><span>Mon – Sat:</span> <span className="font-semibold text-[#FFFFFF]">10:00 AM – 8:00 PM</span></p>
-                  <p className="flex justify-between gap-4 mt-1"><span>Sunday:</span> <span className="text-[#D4AF37] italic">Closed (By Appointment)</span></p>
+                <div className="font-sans text-sm text-white/60 leading-relaxed font-light whitespace-pre-line mt-1">
+                  <p>{content.hours}</p>
                 </div>
               </div>
             </motion.div>
@@ -251,10 +254,10 @@ export default function ContactPage() {
                   className="bg-[#000000]/80 backdrop-blur-md border border-white/10 rounded-3xl p-8 md:p-12 shadow-[0_15px_40px_-10px_rgba(26,26,26,0.04)]"
                 >
                   <h2 className="font-serif text-2xl text-[#FFFFFF] font-light mb-2">
-                    Send a Message
+                    {content.formTitle}
                   </h2>
                   <p className="font-sans text-[10px] text-[#D4AF37] tracking-[0.2em] uppercase mb-8">
-                    Bespoke consultations and enquiries
+                    {content.formDesc}
                   </p>
 
                   <form onSubmit={handleSubmit} className="flex flex-col gap-8">
@@ -368,7 +371,7 @@ export default function ContactPage() {
 
         </div>
 
-        {/* Map Section */}
+        {/* Map or Store Image Section */}
         <motion.div 
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
@@ -376,16 +379,20 @@ export default function ContactPage() {
           className="mt-20 md:mt-28"
         >
           <div className="overflow-hidden rounded-3xl border border-white/10 shadow-[0_15px_40px_-20px_rgba(26,26,26,0.08)] bg-[#000000] relative">
-            <iframe 
-              src="https://maps.google.com/maps?q=Nandhavanapatty,%20Old%20Karur%20Road,%20Dindigul&t=&z=15&ie=UTF8&iwloc=&output=embed" 
-              width="100%" 
-              height="450" 
-              style={{ border: 0 }} 
-              allowFullScreen="" 
-              loading="lazy" 
-              referrerPolicy="no-referrer-when-downgrade" 
-              className="grayscale contrast-[1.15] opacity-80 hover:grayscale-0 hover:opacity-100 transition-all duration-700 w-full"
-            ></iframe>
+            {content.storeImage ? (
+              <img src={content.storeImage} alt="Store Location" className="w-full h-[450px] object-cover opacity-80 hover:opacity-100 transition-all duration-700" />
+            ) : (
+              <iframe 
+                src="https://maps.google.com/maps?q=Nandhavanapatty,%20Old%20Karur%20Road,%20Dindigul&t=&z=15&ie=UTF8&iwloc=&output=embed" 
+                width="100%" 
+                height="450" 
+                style={{ border: 0 }} 
+                allowFullScreen="" 
+                loading="lazy" 
+                referrerPolicy="no-referrer-when-downgrade" 
+                className="grayscale contrast-[1.15] opacity-80 hover:grayscale-0 hover:opacity-100 transition-all duration-700 w-full"
+              ></iframe>
+            )}
           </div>
         </motion.div>
 

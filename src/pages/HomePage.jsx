@@ -11,13 +11,21 @@ import SEO from '../components/common/SEO'
 import PageTransition from '../components/common/PageTransition'
 import StyleQuizModal from '../components/discovery/StyleQuizModal'
 
+import { useSiteContent } from '../hooks/useSiteContent'
+
 function HeroSlider() {
   const navigate = useNavigate();
+  const { content } = useSiteContent('home', {
+    title: 'LUXE PRECISION',
+    subtitle: 'Discover The Collection',
+    imageUrl: 'https://images.unsplash.com/photo-1595777457583-95e059d581b8?q=80&w=1200'
+  });
+
   return (
     <section className="relative h-screen w-full flex items-center justify-center overflow-hidden">
       <div className="absolute inset-0 z-0">
         <img
-          src="https://images.unsplash.com/photo-1595777457583-95e059d581b8?q=80&w=1200"
+          src={content.imageUrl || 'https://images.unsplash.com/photo-1595777457583-95e059d581b8?q=80&w=1200'}
           alt="Hero"
           className="w-full h-full object-cover"
         />
@@ -30,7 +38,7 @@ function HeroSlider() {
           transition={{ duration: 1 }}
           className="font-serif text-4xl md:text-6xl tracking-widest mb-6"
         >
-          LUXE PRECISION
+          {content.title}
         </motion.h1>
         <motion.p
           initial={{ opacity: 0, y: 20 }}
@@ -38,7 +46,7 @@ function HeroSlider() {
           transition={{ duration: 1, delay: 0.2 }}
           className="font-sans text-sm md:text-base tracking-[0.2em] uppercase mb-10 text-[#C5A880]"
         >
-          Discover The Collection
+          {content.subtitle}
         </motion.p>
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -85,32 +93,37 @@ function ScrollCounter({ from = 0, to, duration = 2 }) {
 }
 
 function BrandStats() {
+  const { content } = useSiteContent('home', {
+    stat1Num: '10', stat1Label: 'Happy Clients', stat2Num: '50', stat2Label: 'Global Brands',
+    stat3Num: '99', stat3Label: 'Satisfaction', stat4Num: '1992', stat4Label: 'Est. Heritage'
+  });
+
   return (
     <section className="py-20 px-6 bg-[#0a0a0a] border-y border-[#333333]">
       <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-12 text-center">
         <div className="flex flex-col items-center justify-center">
           <h3 className="text-4xl md:text-5xl font-serif text-[#D4AF37] mb-2 flex items-center">
-            <ScrollCounter from={0} to={10} /><span className="text-3xl ml-1">k+</span>
+            <ScrollCounter from={0} to={parseInt(content.stat1Num) || 10} /><span className="text-3xl ml-1">k+</span>
           </h3>
-          <p className="text-[10px] uppercase tracking-widest text-gray-400 font-bold">Happy Clients</p>
+          <p className="text-[10px] uppercase tracking-widest text-gray-400 font-bold">{content.stat1Label}</p>
         </div>
         <div className="flex flex-col items-center justify-center">
           <h3 className="text-4xl md:text-5xl font-serif text-[#D4AF37] mb-2 flex items-center">
-            <ScrollCounter from={0} to={50} /><span className="text-3xl ml-1">+</span>
+            <ScrollCounter from={0} to={parseInt(content.stat2Num) || 50} /><span className="text-3xl ml-1">+</span>
           </h3>
-          <p className="text-[10px] uppercase tracking-widest text-gray-400 font-bold">Global Brands</p>
+          <p className="text-[10px] uppercase tracking-widest text-gray-400 font-bold">{content.stat2Label}</p>
         </div>
         <div className="flex flex-col items-center justify-center">
           <h3 className="text-4xl md:text-5xl font-serif text-[#D4AF37] mb-2 flex items-center">
-            <ScrollCounter from={0} to={99} /><span className="text-3xl ml-1">%</span>
+            <ScrollCounter from={0} to={parseInt(content.stat3Num) || 99} /><span className="text-3xl ml-1">%</span>
           </h3>
-          <p className="text-[10px] uppercase tracking-widest text-gray-400 font-bold">Satisfaction</p>
+          <p className="text-[10px] uppercase tracking-widest text-gray-400 font-bold">{content.stat3Label}</p>
         </div>
         <div className="flex flex-col items-center justify-center">
           <h3 className="text-4xl md:text-5xl font-serif text-[#D4AF37] mb-2">
-            <ScrollCounter from={1980} to={1992} />
+            <ScrollCounter from={1980} to={parseInt(content.stat4Num) || 1992} />
           </h3>
-          <p className="text-[10px] uppercase tracking-widest text-gray-400 font-bold">Est. Heritage</p>
+          <p className="text-[10px] uppercase tracking-widest text-gray-400 font-bold">{content.stat4Label}</p>
         </div>
       </div>
     </section>
@@ -118,10 +131,19 @@ function BrandStats() {
 }
 
 function StickyScrollEditorial() {
+  const { content } = useSiteContent('home', {
+    editorialTag: 'The Lookbook', 
+    editorialTitle: 'Editorial Elegance', 
+    editorialDesc: 'A curated selection of the season\'s most coveted pieces, blending timeless heritage craftsmanship with modern avant-garde silhouettes designed for the discerning few.',
+    editorialImg1: 'https://images.unsplash.com/photo-1595777457583-95e059d581b8?q=80&w=1200',
+    editorialImg2: '/assets/images/velvet_jewel_box.png',
+    editorialImg3: 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?q=80&w=1200'
+  });
+
   const images = [
-    'https://images.unsplash.com/photo-1595777457583-95e059d581b8?q=80&w=1200',
-    '/assets/images/velvet_jewel_box.png',
-    'https://images.unsplash.com/photo-1610030469983-98e550d6193c?q=80&w=1200'
+    content.editorialImg1 || 'https://images.unsplash.com/photo-1595777457583-95e059d581b8?q=80&w=1200',
+    content.editorialImg2 || '/assets/images/velvet_jewel_box.png',
+    content.editorialImg3 || 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?q=80&w=1200'
   ]
 
   return (
@@ -137,7 +159,7 @@ function StickyScrollEditorial() {
             transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
             className="text-[10px] md:text-xs font-sans tracking-[0.3em] uppercase text-[#D4AF37] mb-6 flex items-center gap-4"
           >
-            <span className="w-12 h-[1px] bg-[#D4AF37]"></span> The Lookbook
+            <span className="w-12 h-[1px] bg-[#D4AF37]"></span> {content.editorialTag}
           </motion.p>
           
           <motion.h2 
@@ -147,7 +169,7 @@ function StickyScrollEditorial() {
             transition={{ duration: 1.2, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
             className="text-4xl md:text-6xl font-serif text-[#FFFFFF] leading-[1.1] mb-8"
           >
-            Editorial <br/><span className="italic text-[#D4AF37]">Elegance</span>
+            {content.editorialTitle}
           </motion.h2>
 
           <motion.p 
@@ -157,7 +179,7 @@ function StickyScrollEditorial() {
             transition={{ duration: 1.2, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
             className="font-sans text-sm md:text-base text-[#D4AF37] leading-relaxed max-w-sm mb-12 font-light"
           >
-            A curated selection of the season's most coveted pieces, blending timeless heritage craftsmanship with modern avant-garde silhouettes designed for the discerning few.
+            {content.editorialDesc}
           </motion.p>
 
           <motion.button 
@@ -197,6 +219,12 @@ function StickyScrollEditorial() {
 
 function AtelierExperience() {
   const navigate = useNavigate()
+  const { content } = useSiteContent('home', {
+    atelierTag: 'The Atelier Experience', 
+    atelierTitle: 'A Private Salon <br/> <span className="italic text-[#D4AF37]">Through Custom Luxury</span>', 
+    atelierDesc: 'Step into our curated flagship showroom. Each drape, silk thread, and zari weave is hand-selected to offer an experience of unparalleled elegance. Whether curating returns for grand milestones or selecting bridal masterpieces, our gifting concierge ensures personalized perfection down to the final ribbon.', 
+    atelierImage: 'https://images.unsplash.com/photo-1549465220-1a8b9238cd48?q=80&w=1200'
+  });
 
   return (
     <section className="py-24 md:py-32 px-6 bg-[#111111] text-[#FFFFFF] overflow-hidden">
@@ -205,16 +233,13 @@ function AtelierExperience() {
         {/* Left text column */}
         <div className="w-full lg:w-5/12">
           <p className="text-[10px] md:text-xs font-sans tracking-[0.3em] uppercase text-[#D4AF37] mb-6 flex items-center gap-4">
-            <span className="w-12 h-[1px] bg-[#D4AF37]"></span> The Atelier Experience
+            <span className="w-12 h-[1px] bg-[#D4AF37]"></span> {content.atelierTag}
           </p>
           
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-serif text-[#FFFFFF] leading-[1.15] mb-8">
-            A Private Salon <br/>
-            <span className="italic text-[#D4AF37]">Through Custom Luxury</span>
-          </h2>
+          <h2 className="text-4xl md:text-5xl lg:text-6xl font-serif text-[#FFFFFF] leading-[1.15] mb-8" dangerouslySetInnerHTML={{ __html: content.atelierTitle }} />
 
           <p className="font-sans text-sm md:text-base text-white/60 leading-relaxed mb-10 font-light max-w-sm">
-            Step into our curated flagship showroom. Each drape, silk thread, and zari weave is hand-selected to offer an experience of unparalleled elegance. Whether curating returns for grand milestones or selecting bridal masterpieces, our gifting concierge ensures personalized perfection down to the final ribbon.
+            {content.atelierDesc}
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4">
@@ -241,7 +266,7 @@ function AtelierExperience() {
             
             <div className="aspect-[4/3] rounded-2xl overflow-hidden bg-[#111111]">
               <img 
-                src="/assets/images/boutique_rack.jpg" 
+                src={content.atelierImage || '/assets/images/boutique_rack.jpg'} 
                 alt="Flagship Boutique Rack" 
                 className="w-full h-full object-cover transition-transform duration-[2s] group-hover:scale-105"
               />

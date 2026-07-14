@@ -20,4 +20,8 @@ export const adminService = {
   updateCustomer:     async (id, data) => (await api.patch(`/admin/customers/${id}`, data)).data,
   updateCustomerRole: async (id, role) => (await api.patch(`/admin/customers/${id}/role`, { role })).data,
   deleteCustomer:     async (id) => (await api.delete(`/admin/customers/${id}`)).data,
+
+  // Content Management
+  getContent: async (pageName) => (await api.get(`/content/${pageName}`)).data,
+  updateContent: async (pageName, data) => (await api.post(`/admin/content/${pageName}`, data)).data,
 }

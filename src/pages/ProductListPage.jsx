@@ -8,8 +8,15 @@ import PageTransition from '../components/common/PageTransition'
 import ProductCardSkeleton from '../components/common/ProductCardSkeleton'
 import ProductCard from '../components/common/ProductCard'
 import { formatCurrency } from '../utils/currency'
+import { useSiteContent } from '../hooks/useSiteContent'
 
 export default function ProductListPage() {
+  const { content } = useSiteContent('boutique', {
+    heritageTag: '✦ Custom Handloom Weaves', heritageTitle: 'The Heritage Boutique', heritageDesc: 'Drape yourself in royal garments spun with absolute devotion. Our boutique catalog houses authentic pure Banarasi silks, handloom Kanchipuram sarees, and Gota Patti embroidered suites direct from artisanal houses.', 
+    atelierTag: '✦ Flagship Experience', atelierTitle: 'Inside Our Atelier', atelierDesc: 'Explore the curated spaces of our physical boutique showroom. Each collection is meticulously organized to offer a sensory journey through India\'s finest handloom craftsmanship and heritage designs.',
+    showroomImg1: '', showroomText1: 'Exquisite Heritage Silks', showroomImg2: '', showroomText2: 'Fine Handloom Weaves', showroomImg3: '', showroomText3: 'Zari Embroidered Kurtis', showroomImg4: '', showroomText4: 'Bridal Masterpieces'
+  })
+
   const [products, setProducts] = useState([])
   const [loading, setLoading] = useState(true)
   const [searchParams, setSearchParams] = useSearchParams()
@@ -91,13 +98,13 @@ export default function ProductListPage() {
           
           <div className="relative z-10">
             <span className="inline-block text-[9px] font-sans font-bold tracking-[0.3em] text-[#D4AF37] mb-4 bg-[#D4AF37]/10 px-3 py-1 rounded-sm uppercase">
-              ✦ Custom Handloom Weaves
+              {content.heritageTag}
             </span>
             <h1 className="text-3xl md:text-5xl font-serif text-[#FFFFFF] mb-4 tracking-wide font-normal">
-              The Heritage Boutique
+              {content.heritageTitle}
             </h1>
-            <p className="text-[#A3A3A3] font-sans text-xs md:text-sm font-light max-w-2xl leading-relaxed">
-              Drape yourself in royal garments spun with absolute devotion. Our boutique catalog houses authentic pure Banarasi silks, handloom Kanchipuram sarees, and Gota Patti embroidered suites direct from artisanal houses.
+            <p className="text-[#A3A3A3] font-sans text-xs md:text-sm font-light max-w-2xl leading-relaxed whitespace-pre-line">
+              {content.heritageDesc}
             </p>
           </div>
         </div>
@@ -108,39 +115,39 @@ export default function ProductListPage() {
         <div className="bg-[#000000] border border-[#D4AF37]/30 rounded-3xl p-6 md:p-8 shadow-[0_0_30px_rgba(212,175,55,0.03)]">
           <div className="max-w-xl mb-6">
             <span className="text-[10px] font-sans font-bold tracking-[0.3em] text-[#D4AF37] uppercase block mb-2">
-              ✦ Flagship Experience
+              {content.atelierTag}
             </span>
             <h2 className="text-2xl md:text-3xl font-serif text-[#FFFFFF]">
-              Inside Our Atelier
+              {content.atelierTitle}
             </h2>
-            <p className="text-gray-400 font-sans text-xs mt-2 leading-relaxed font-light">
-              Explore the curated spaces of our physical boutique showroom. Each collection is meticulously organized to offer a sensory journey through India's finest handloom craftsmanship and heritage designs.
+            <p className="text-gray-400 font-sans text-xs mt-2 leading-relaxed font-light whitespace-pre-line">
+              {content.atelierDesc}
             </p>
           </div>
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div className="group relative aspect-[3/4] overflow-hidden rounded-2xl bg-[#111111] shadow-sm border border-[#D4AF37]/20">
-              <img src="/assets/images/boutique_4.jpg" alt="Showroom Display" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+              <img src={content.showroomImg1 || "/assets/images/boutique_4.jpg"} alt="Showroom Display" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
               <div className="absolute inset-0 bg-gradient-to-t from-[#FFFFFF]/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end p-4">
-                <p className="text-white text-[9px] font-sans tracking-widest uppercase font-semibold">Exquisite Heritage Silks</p>
+                <p className="text-white text-[9px] font-sans tracking-widest uppercase font-semibold">{content.showroomText1}</p>
               </div>
             </div>
             <div className="group relative aspect-[3/4] overflow-hidden rounded-2xl bg-[#111111] shadow-sm border border-[#D4AF37]/20">
-              <img src="/assets/images/boutique_1.jpg" alt="Showroom Display" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+              <img src={content.showroomImg2 || "/assets/images/boutique_1.jpg"} alt="Showroom Display" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
               <div className="absolute inset-0 bg-gradient-to-t from-[#FFFFFF]/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end p-4">
-                <p className="text-white text-[9px] font-sans tracking-widest uppercase font-semibold">Fine Handloom Weaves</p>
+                <p className="text-white text-[9px] font-sans tracking-widest uppercase font-semibold">{content.showroomText2}</p>
               </div>
             </div>
             <div className="group relative aspect-[3/4] overflow-hidden rounded-2xl bg-[#111111] shadow-sm border border-[#D4AF37]/20">
-              <img src="/assets/images/boutique_2.jpg" alt="Showroom Display" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+              <img src={content.showroomImg3 || "/assets/images/boutique_2.jpg"} alt="Showroom Display" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
               <div className="absolute inset-0 bg-gradient-to-t from-[#FFFFFF]/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end p-4">
-                <p className="text-white text-[9px] font-sans tracking-widest uppercase font-semibold">Zari Embroidered Kurtis</p>
+                <p className="text-white text-[9px] font-sans tracking-widest uppercase font-semibold">{content.showroomText3}</p>
               </div>
             </div>
             <div className="group relative aspect-[3/4] overflow-hidden rounded-2xl bg-[#111111] shadow-sm border border-[#D4AF37]/20">
-              <img src="/assets/images/boutique_3.jpg" alt="Showroom Display" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+              <img src={content.showroomImg4 || "/assets/images/boutique_3.jpg"} alt="Showroom Display" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
               <div className="absolute inset-0 bg-gradient-to-t from-[#FFFFFF]/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end p-4">
-                <p className="text-white text-[9px] font-sans tracking-widest uppercase font-semibold">Ethnic Bridal Couture</p>
+                <p className="text-white text-[9px] font-sans tracking-widest uppercase font-semibold">{content.showroomText4}</p>
               </div>
             </div>
           </div>

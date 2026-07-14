@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { useCart } from '../context/CartContext'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Gift, Calendar, Phone, CheckCircle, ShoppingBag, Eye, X } from 'lucide-react'
+import { useSiteContent } from '../hooks/useSiteContent'
 
 // --- Mock Data ---
 const RETURN_GIFTS = [
@@ -87,7 +88,7 @@ const RETURN_GIFTS = [
 
 // --- Components ---
 
-function Hero() {
+function Hero({ content }) {
   return (
     <section className="relative h-[70vh] flex flex-col justify-center items-center overflow-hidden bg-[#111111]">
       <motion.div 
@@ -97,7 +98,7 @@ function Hero() {
         className="absolute inset-0 z-0"
       >
         <img 
-          src="https://images.unsplash.com/photo-1511285560929-80b456fea0bc?q=80&w=1920" 
+          src={content.imageUrl || 'https://images.unsplash.com/photo-1511285560929-80b456fea0bc?q=80&w=1920'} 
           alt="Luxury Return Gifts" 
           className="w-full h-full object-cover opacity-60"
         />
@@ -111,23 +112,23 @@ function Hero() {
           transition={{ duration: 0.8, delay: 0.2 }}
           className="text-[#D4AF37] text-[10px] md:text-xs font-sans tracking-[0.4em] uppercase mb-6"
         >
-          Bulk & Corporate Gifting
+          {content.heroTag}
         </motion.p>
         <motion.h1 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.4 }}
-          className="text-4xl md:text-6xl lg:text-7xl font-serif text-[#FFFFFF] leading-[1.1] mb-6"
+          className="text-4xl md:text-6xl lg:text-7xl font-serif text-[#FFFFFF] leading-[1.1] mb-6 whitespace-pre-line"
         >
-          Curated Elegance <br/><span className="italic text-[#D4AF37]">For Every Guest</span>
+          {content.title}
         </motion.h1>
         <motion.p
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.6 }}
-          className="font-sans text-xs md:text-sm text-[#FFFFFF]/60 max-w-xl mx-auto leading-relaxed font-light mb-10"
+          className="font-sans text-xs md:text-sm text-[#FFFFFF]/60 max-w-xl mx-auto leading-relaxed font-light mb-10 whitespace-pre-line"
         >
-          Elevate your milestones—weddings, corporate retreats, and grand celebrations—with bespoke return gifts crafted by master artisans.
+          {content.subtitle}
         </motion.p>
         <motion.button 
           initial={{ opacity: 0 }}
@@ -375,7 +376,7 @@ function GiftCard({ gift }) {
   )
 }
 
-function GiftGallery() {
+function GiftGallery({ content }) {
   return (
     <section className="py-20 md:py-32 px-6 bg-[#000000]">
       <div className="max-w-7xl mx-auto">
@@ -387,7 +388,7 @@ function GiftGallery() {
             transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
             className="text-3xl md:text-5xl font-serif text-[#FFFFFF] mb-4"
           >
-            The <span className="italic text-[#D4AF37]">Gift Gallery</span>
+            {content.galleryTitle}
           </motion.h2>
           <motion.p 
             initial={{ opacity: 0, y: 20 }}
@@ -396,7 +397,7 @@ function GiftGallery() {
             transition={{ duration: 1.2, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
             className="font-sans text-[10px] md:text-xs tracking-[0.2em] uppercase text-[#D4AF37]"
           >
-            A Selection of our most coveted pieces
+            {content.gallerySubtitle}
           </motion.p>
         </div>
 
@@ -410,19 +411,19 @@ function GiftGallery() {
   )
 }
 
-function Process() {
+function Process({ content }) {
   const steps = [
-    { icon: Phone, title: 'Consultation', desc: 'Discuss your event theme, guest list, and vision with our dedicated gifting concierge.' },
-    { icon: Gift, title: 'Customization', desc: 'Select products, bespoke packaging, ribbons, and personalized name tags or logos.' },
-    { icon: Calendar, title: 'Delivery', desc: 'Relax as we handle the logistics, ensuring pristine, on-time delivery to your venue.' },
+    { icon: Phone, title: content.step1Title, desc: content.step1Desc },
+    { icon: Gift, title: content.step2Title, desc: content.step2Desc },
+    { icon: Calendar, title: content.step3Title, desc: content.step3Desc },
   ]
 
   return (
     <section className="py-20 md:py-32 px-6 bg-[#111111] text-[#FFFFFF] border-y border-white/5">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-16 md:mb-24">
-          <h2 className="text-3xl md:text-5xl font-serif mb-4">The <span className="italic text-[#D4AF37]">Experience</span></h2>
-          <p className="font-sans text-[10px] md:text-xs tracking-[0.2em] uppercase text-white/50">Seamless from concept to unboxing</p>
+          <h2 className="text-3xl md:text-5xl font-serif mb-4">{content.processTitle}</h2>
+          <p className="font-sans text-[10px] md:text-xs tracking-[0.2em] uppercase text-white/50">{content.processSubtitle}</p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-8 relative">
@@ -451,7 +452,7 @@ function Process() {
   )
 }
 
-function BulkInquiryForm() {
+function BulkInquiryForm({ content }) {
   const [submitted, setSubmitted] = useState(false)
 
   const handleSubmit = (e) => {
@@ -468,8 +469,8 @@ function BulkInquiryForm() {
         <div className="absolute bottom-0 left-0 w-64 h-64 bg-[#D4AF37]/10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
 
         <div className="relative z-10 text-center mb-12">
-          <h2 className="text-3xl md:text-5xl font-serif text-[#FFFFFF] mb-4">Request a <span className="italic text-[#D4AF37]">Quote</span></h2>
-          <p className="font-sans text-sm text-[#D4AF37] font-light max-w-md mx-auto">Fill out the details below, and our gifting concierge will contact you within 24 hours.</p>
+          <h2 className="text-3xl md:text-5xl font-serif text-[#FFFFFF] mb-4">{content.inquiryTitle}</h2>
+          <p className="font-sans text-sm text-[#D4AF37] font-light max-w-md mx-auto">{content.inquiryDesc}</p>
         </div>
 
         {submitted ? (
@@ -531,12 +532,22 @@ function BulkInquiryForm() {
 }
 
 export default function ReturnGiftsPage() {
+  const { content } = useSiteContent('return-gifts', {
+    heroTag: 'Bulk & Corporate Gifting', title: 'Curated Elegance For Every Guest', subtitle: 'Elevate your milestones—weddings, corporate retreats, and grand celebrations—with bespoke return gifts crafted by master artisans.', imageUrl: '',
+    galleryTitle: 'The Gift Gallery', gallerySubtitle: 'A Selection of our most coveted pieces',
+    processTitle: 'The Experience', processSubtitle: 'Seamless from concept to unboxing',
+    step1Title: 'Consultation', step1Desc: 'Discuss your event theme, guest list, and vision with our dedicated gifting concierge.',
+    step2Title: 'Customization', step2Desc: 'Select products, bespoke packaging, ribbons, and personalized name tags or logos.',
+    step3Title: 'Delivery', step3Desc: 'Relax as we handle the logistics, ensuring pristine, on-time delivery to your venue.',
+    inquiryTitle: 'Request a Quote', inquiryDesc: 'Fill out the details below, and our gifting concierge will contact you within 24 hours.'
+  })
+
   return (
     <main className="bg-[#000000] min-h-screen">
-      <Hero />
-      <GiftGallery />
-      <Process />
-      <BulkInquiryForm />
+      <Hero content={content} />
+      <GiftGallery content={content} />
+      <Process content={content} />
+      <BulkInquiryForm content={content} />
     </main>
   )
 }
