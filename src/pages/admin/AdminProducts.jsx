@@ -13,23 +13,20 @@ function ProductForm({ initial, onSave, onCancel, saving }) {
   
   const set = (k,v) => setF(p=>({...p,[k]:v}))
 
-  const handleImageUpload = async (e) => {
+  const handleImageUpload = (e) => {
     const file = e.target.files?.[0]
     if (!file) return
     setUploading(true)
-    try {
-      const formData = new FormData()
-      formData.append('image', file)
-      const res = await adminService.uploadImage(formData)
-      if (res.success) {
-        set('image', res.imageUrl)
-      }
-    } catch (err) {
-      console.error(err)
-      alert("Failed to upload image")
-    } finally {
+    const reader = new FileReader()
+    reader.onloadend = () => {
+      set('image', reader.result)
       setUploading(false)
     }
+    reader.onerror = () => {
+      alert("Failed to read image file")
+      setUploading(false)
+    }
+    reader.readAsDataURL(file)
   }
   return (
     <form onSubmit={e=>{e.preventDefault();onSave(f)}} className="space-y-4">
@@ -45,7 +42,12 @@ function ProductForm({ initial, onSave, onCancel, saving }) {
       <div>
         <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Product Image</label>
         <div className="flex items-center gap-4">
-          {f.image && <img src={f.image} alt="Preview" className="w-12 h-12 rounded-lg object-cover border border-[#333333] bg-[#1A1A1A]" />}
+          {f.image && (
+            <div className="flex flex-col items-center gap-1">
+              <img src={f.image} alt="Preview" className="w-12 h-12 rounded-lg object-cover border border-[#333333] bg-[#1A1A1A]" />
+              <button type="button" onClick={() => set('image', '')} className="text-[10px] text-red-500 hover:text-red-400 font-bold tracking-widest uppercase">Remove</button>
+            </div>
+          )}
           <input type="file" accept="image/*" className="hidden" ref={fileInputRef} onChange={handleImageUpload} />
           <button type="button" onClick={() => fileInputRef.current?.click()} disabled={uploading} className="px-4 py-2.5 bg-[#1A1A1A] border border-[#444444] rounded-xl text-gray-400 hover:text-white transition-colors flex items-center gap-2 text-sm flex-1 justify-center font-bold">
             <Upload size={16} /> {uploading ? 'Uploading...' : (f.image ? 'Change Image' : 'Upload Image')}

@@ -73,8 +73,9 @@ export default function ProductCard({ product, variants }) {
         {/* Image container with rounded corners and overlay buttons */}
         <div className="relative aspect-[3/4] overflow-hidden rounded-2xl bg-[#111111] mb-5 shadow-[0_4px_20px_rgba(0,0,0,0.02)]">
           <img
-            src={displayImage}
+            src={displayImage || 'https://images.unsplash.com/photo-1612196808214-b8e1d6145a8c?q=80&w=800'}
             alt={product.name}
+            onError={(e) => { e.target.onerror = null; e.target.src = 'https://images.unsplash.com/photo-1612196808214-b8e1d6145a8c?q=80&w=800' }}
             className="w-full h-full object-cover transition-transform duration-[1.5s] ease-[cubic-bezier(0.25,1,0.5,1)] group-hover:scale-105"
           />
           <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-700" />

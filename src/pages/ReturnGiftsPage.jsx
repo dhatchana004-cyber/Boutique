@@ -1,90 +1,10 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useCart } from '../context/CartContext'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Gift, Calendar, Phone, CheckCircle, ShoppingBag, Eye, X } from 'lucide-react'
 import { useSiteContent } from '../hooks/useSiteContent'
-
-// --- Mock Data ---
-const RETURN_GIFTS = [
-  {
-    id: 25,
-    name: 'Meenakari Bowl Duo',
-    desc: 'Exquisite handcrafted bowls in vibrant enamel work. A timeless classic.',
-    price: 3450,
-    image: 'https://images.unsplash.com/photo-1612196808214-b8e1d6145a8c?q=80&w=800',
-  },
-  {
-    id: 24,
-    name: 'Rani Velvet Jewel Box',
-    desc: 'Plush velvet exterior with intricate Zari embroidery. Perfect for bespoke gifting.',
-    price: 8900,
-    image: '/assets/images/velvet_jewel_box.png',
-  },
-  {
-    id: 31,
-    name: 'Silver-Plated Thali Set',
-    desc: 'A heavy, luxurious silver-plated serving set for festive milestones.',
-    price: 12500,
-    image: 'https://images.unsplash.com/photo-1607344645866-009c320b63e0?q=80&w=800',
-  },
-  {
-    id: 32,
-    name: 'Artisan Scented Candles',
-    desc: 'Hand-poured soy candles infused with rare essential oils in a brass container.',
-    price: 2100,
-    image: 'https://images.unsplash.com/photo-1549465220-1a8b9238cd48?q=80&w=800',
-  },
-  {
-    id: 28,
-    name: 'Artisan Gift Hamper',
-    desc: 'Premium imported nuts and dates presented in a handcrafted wooden chest.',
-    price: 5500,
-    image: 'https://images.unsplash.com/photo-1513885535751-8b9238bd345a?q=80&w=800',
-  },
-  {
-    id: 33,
-    name: 'Handwoven Silk Stoles',
-    desc: 'Luxurious Banarasi silk stoles, an elegant token of appreciation for honored guests.',
-    price: 6200,
-    image: 'https://images.unsplash.com/photo-1525507119028-ed4c629a60a3?q=80&w=800',
-  },
-  {
-    id: 34,
-    name: 'Floral Artisan Soap Set',
-    desc: 'Handcrafted flower-shaped aroma soaps packaged in an elegant window gift box with ribbon.',
-    price: 1250,
-    image: '/assets/images/gift_1.jpg',
-  },
-  {
-    id: 35,
-    name: 'Blossom Paper Gift Bags',
-    desc: 'Premium pastel pink gift bags decorated with silk ribbons and handcrafted vibrant floral accents.',
-    price: 850,
-    image: '/assets/images/gift_2.jpg',
-  },
-  {
-    id: 36,
-    name: 'Crimson Royal Luggage Set',
-    desc: 'Exquisite white suitcases paired with traditional deep crimson wrapped chests, adorned with fresh orchids.',
-    price: 18500,
-    image: '/assets/images/gift_3.jpg',
-  },
-  {
-    id: 37,
-    name: 'Satin Rose Luggage Gift Set',
-    desc: 'Luxury rose-gold suitcases paired with elegant white ribbon gift boxes, finished with gold floral accessories.',
-    price: 15900,
-    image: '/assets/images/gift_4.jpg',
-  },
-  {
-    id: 38,
-    name: 'MK Luxe Mother\'s Day Hamper',
-    desc: 'A premium celebration hamper containing a designer Michael Kors handbag, fine French perfume, and matching card.',
-    price: 24500,
-    image: '/assets/images/gift_5.jpg',
-  }
-]
+import { productService } from '../services/productService'
 
 // --- Components ---
 
@@ -215,8 +135,9 @@ function GiftCard({ gift }) {
           {/* Image Container */}
           <div className="relative aspect-[4/5] bg-[#F5F2EB] overflow-hidden rounded-2xl mb-5 cursor-pointer" onClick={() => setQuickView(true)}>
             <img 
-              src={gift.image} 
+              src={gift.image || 'https://images.unsplash.com/photo-1549465220-1a8b9238cd48?q=80&w=800'} 
               alt={gift.name} 
+              onError={(e) => { e.target.onerror = null; e.target.src = 'https://images.unsplash.com/photo-1549465220-1a8b9238cd48?q=80&w=800' }}
               className="w-full h-full object-cover transition-transform duration-[2s] group-hover:scale-105"
             />
             
@@ -259,7 +180,7 @@ function GiftCard({ gift }) {
               {gift.name}
             </h3>
             <p className="font-sans text-xs text-[#D4AF37] mb-4 leading-relaxed font-light line-clamp-2">
-              {gift.desc}
+              {gift.description || gift.desc}
             </p>
           </div>
         </div>
@@ -313,7 +234,12 @@ function GiftCard({ gift }) {
 
               {/* Left Image Pane */}
               <div className="w-full md:w-1/2 aspect-square md:aspect-auto bg-[#F5F2EB]">
-                <img src={gift.image} className="w-full h-full object-cover" alt={gift.name} />
+                <img 
+                  src={gift.image || 'https://images.unsplash.com/photo-1549465220-1a8b9238cd48?q=80&w=800'} 
+                  onError={(e) => { e.target.onerror = null; e.target.src = 'https://images.unsplash.com/photo-1549465220-1a8b9238cd48?q=80&w=800' }}
+                  className="w-full h-full object-cover" 
+                  alt={gift.name} 
+                />
               </div>
 
               {/* Right Content Pane */}
@@ -327,7 +253,7 @@ function GiftCard({ gift }) {
                   <p className="text-xl font-bold text-[#D4AF37]">₹{gift.price.toLocaleString('en-IN')}</p>
                   
                   <p className="text-sm font-semibold text-gray-400 uppercase tracking-widest pt-2">Description</p>
-                  <p className="text-xs text-gray-650 leading-relaxed font-light">{gift.desc}</p>
+                  <p className="text-xs text-gray-650 leading-relaxed font-light">{gift.description || gift.desc}</p>
                 </div>
 
                 <div className="space-y-4 pt-6 border-t border-gray-50 mt-6">
@@ -376,7 +302,7 @@ function GiftCard({ gift }) {
   )
 }
 
-function GiftGallery({ content }) {
+function GiftGallery({ content, products, loading }) {
   return (
     <section className="py-20 md:py-32 px-6 bg-[#000000]">
       <div className="max-w-7xl mx-auto">
@@ -402,9 +328,19 @@ function GiftGallery({ content }) {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-12">
-          {RETURN_GIFTS.map((gift) => (
-            <GiftCard key={gift.id} gift={gift} />
-          ))}
+          {loading ? (
+            <div className="col-span-full text-center py-12 text-[#FFFFFF]/50 font-sans tracking-widest uppercase text-xs">
+              Loading return gifts...
+            </div>
+          ) : products && products.length > 0 ? (
+            products.map((gift) => (
+              <GiftCard key={gift.id || gift._id} gift={gift} />
+            ))
+          ) : (
+            <div className="col-span-full text-center py-12 text-[#FFFFFF]/50 font-sans tracking-widest uppercase text-xs">
+              No return gifts available at the moment.
+            </div>
+          )}
         </div>
       </div>
     </section>
@@ -542,10 +478,29 @@ export default function ReturnGiftsPage() {
     inquiryTitle: 'Request a Quote', inquiryDesc: 'Fill out the details below, and our gifting concierge will contact you within 24 hours.'
   })
 
+  const [products, setProducts] = useState([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const fetchGifts = async () => {
+      try {
+        const res = await productService.getAllProducts({ category: 'Return Gifts' })
+        if (res.success && res.data) {
+          setProducts(res.data)
+        }
+      } catch (err) {
+        console.error(err)
+      } finally {
+        setLoading(false)
+      }
+    }
+    fetchGifts()
+  }, [])
+
   return (
     <main className="bg-[#000000] min-h-screen">
       <Hero content={content} />
-      <GiftGallery content={content} />
+      <GiftGallery content={content} products={products} loading={loading} />
       <Process content={content} />
       <BulkInquiryForm content={content} />
     </main>

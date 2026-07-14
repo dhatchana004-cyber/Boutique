@@ -146,7 +146,10 @@ export default function AdminSiteContent() {
                 <label className="block text-xs text-gray-400 font-bold uppercase tracking-widest mb-2">Hero Image (Optional)</label>
                 <div className="flex items-center gap-4">
                   {contentData.imageUrl && (
-                    <img src={contentData.imageUrl} alt="Hero preview" className="w-16 h-16 object-cover rounded-lg border border-[#333333]" />
+                    <div className="flex flex-col items-center gap-1">
+                      <img src={contentData.imageUrl} alt="Hero preview" className="w-16 h-16 object-cover rounded-lg border border-[#333333]" />
+                      <button type="button" onClick={() => handleChange('imageUrl', '')} className="text-[10px] text-red-500 hover:text-red-400 uppercase tracking-widest font-bold">Remove</button>
+                    </div>
                   )}
                   <input type="file" accept="image/*" onChange={(e) => handleImageUpload(e, 'imageUrl')} className="w-full bg-[#000000] border border-[#333333] rounded-xl px-4 py-2 text-white focus:border-[#D4AF37] focus:outline-none file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-bold file:bg-[#D4AF37] file:text-black hover:file:bg-[#b5952f] cursor-pointer" />
                 </div>
@@ -211,21 +214,36 @@ export default function AdminSiteContent() {
                 <div>
                   <label className="block text-xs text-gray-400 font-bold uppercase tracking-widest mb-2">Image 1</label>
                   <div className="flex flex-col gap-2">
-                    {contentData.editorialImg1 && <img src={contentData.editorialImg1} className="w-full h-24 object-cover rounded-lg border border-[#333333]" />}
+                    {contentData.editorialImg1 && (
+                      <div className="relative">
+                        <img src={contentData.editorialImg1} className="w-full h-24 object-cover rounded-lg border border-[#333333]" />
+                        <button type="button" onClick={() => handleChange('editorialImg1', '')} className="absolute top-2 right-2 bg-black/60 hover:bg-red-500 text-white rounded p-1 text-[9px] uppercase font-bold tracking-widest transition-colors backdrop-blur-md">Remove</button>
+                      </div>
+                    )}
                     <input type="file" accept="image/*" onChange={(e) => handleImageUpload(e, 'editorialImg1')} className="text-xs text-white file:bg-[#D4AF37] file:border-0 file:rounded file:px-2 file:py-1 file:text-black cursor-pointer" />
                   </div>
                 </div>
                 <div>
                   <label className="block text-xs text-gray-400 font-bold uppercase tracking-widest mb-2">Image 2</label>
                   <div className="flex flex-col gap-2">
-                    {contentData.editorialImg2 && <img src={contentData.editorialImg2} className="w-full h-24 object-cover rounded-lg border border-[#333333]" />}
+                    {contentData.editorialImg2 && (
+                      <div className="relative">
+                        <img src={contentData.editorialImg2} className="w-full h-24 object-cover rounded-lg border border-[#333333]" />
+                        <button type="button" onClick={() => handleChange('editorialImg2', '')} className="absolute top-2 right-2 bg-black/60 hover:bg-red-500 text-white rounded p-1 text-[9px] uppercase font-bold tracking-widest transition-colors backdrop-blur-md">Remove</button>
+                      </div>
+                    )}
                     <input type="file" accept="image/*" onChange={(e) => handleImageUpload(e, 'editorialImg2')} className="text-xs text-white file:bg-[#D4AF37] file:border-0 file:rounded file:px-2 file:py-1 file:text-black cursor-pointer" />
                   </div>
                 </div>
                 <div>
                   <label className="block text-xs text-gray-400 font-bold uppercase tracking-widest mb-2">Image 3</label>
                   <div className="flex flex-col gap-2">
-                    {contentData.editorialImg3 && <img src={contentData.editorialImg3} className="w-full h-24 object-cover rounded-lg border border-[#333333]" />}
+                    {contentData.editorialImg3 && (
+                      <div className="relative">
+                        <img src={contentData.editorialImg3} className="w-full h-24 object-cover rounded-lg border border-[#333333]" />
+                        <button type="button" onClick={() => handleChange('editorialImg3', '')} className="absolute top-2 right-2 bg-black/60 hover:bg-red-500 text-white rounded p-1 text-[9px] uppercase font-bold tracking-widest transition-colors backdrop-blur-md">Remove</button>
+                      </div>
+                    )}
                     <input type="file" accept="image/*" onChange={(e) => handleImageUpload(e, 'editorialImg3')} className="text-xs text-white file:bg-[#D4AF37] file:border-0 file:rounded file:px-2 file:py-1 file:text-black cursor-pointer" />
                   </div>
                 </div>
@@ -250,7 +268,10 @@ export default function AdminSiteContent() {
                 <label className="block text-xs text-gray-400 font-bold uppercase tracking-widest mb-2">Atelier Image (Optional)</label>
                 <div className="flex items-center gap-4">
                   {contentData.atelierImage && (
-                    <img src={contentData.atelierImage} alt="Atelier preview" className="w-16 h-16 object-cover rounded-lg border border-[#333333]" />
+                    <div className="flex flex-col items-center gap-1">
+                      <img src={contentData.atelierImage} alt="Atelier preview" className="w-16 h-16 object-cover rounded-lg border border-[#333333]" />
+                      <button type="button" onClick={() => handleChange('atelierImage', '')} className="text-[10px] text-red-500 hover:text-red-400 uppercase tracking-widest font-bold">Remove</button>
+                    </div>
                   )}
                   <input type="file" accept="image/*" onChange={(e) => handleImageUpload(e, 'atelierImage')} className="w-full bg-[#000000] border border-[#333333] rounded-xl px-4 py-2 text-white focus:border-[#D4AF37] focus:outline-none file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-bold file:bg-[#D4AF37] file:text-black hover:file:bg-[#b5952f] cursor-pointer" />
                 </div>
@@ -300,7 +321,12 @@ export default function AdminSiteContent() {
                   <input type="text" value={contentData.showroomText1 || ''} onChange={(e) => handleChange('showroomText1', e.target.value)} className="w-full bg-[#000000] border border-[#333333] rounded-lg px-3 py-2 text-white text-sm mb-3 focus:border-[#D4AF37] focus:outline-none" required />
                   <label className="block text-xs text-gray-400 font-bold uppercase tracking-widest mb-2">Image</label>
                   <div className="flex flex-col gap-2">
-                    {contentData.showroomImg1 && <img src={contentData.showroomImg1} className="w-full h-20 object-cover rounded-md border border-[#333333]" />}
+                    {contentData.showroomImg1 && (
+                      <div className="relative">
+                        <img src={contentData.showroomImg1} className="w-full h-24 object-cover rounded-lg border border-[#333333]" />
+                        <button type="button" onClick={() => handleChange('showroomImg1', '')} className="absolute top-2 right-2 bg-black/60 hover:bg-red-500 text-white rounded p-1 text-[9px] uppercase font-bold tracking-widest transition-colors backdrop-blur-md">Remove</button>
+                      </div>
+                    )}
                     <input type="file" accept="image/*" onChange={(e) => handleImageUpload(e, 'showroomImg1')} className="text-xs text-white file:bg-[#D4AF37] file:border-0 file:rounded file:px-2 file:py-1 file:text-black cursor-pointer" />
                   </div>
                 </div>
@@ -310,7 +336,12 @@ export default function AdminSiteContent() {
                   <input type="text" value={contentData.showroomText2 || ''} onChange={(e) => handleChange('showroomText2', e.target.value)} className="w-full bg-[#000000] border border-[#333333] rounded-lg px-3 py-2 text-white text-sm mb-3 focus:border-[#D4AF37] focus:outline-none" required />
                   <label className="block text-xs text-gray-400 font-bold uppercase tracking-widest mb-2">Image</label>
                   <div className="flex flex-col gap-2">
-                    {contentData.showroomImg2 && <img src={contentData.showroomImg2} className="w-full h-20 object-cover rounded-md border border-[#333333]" />}
+                    {contentData.showroomImg2 && (
+                      <div className="relative">
+                        <img src={contentData.showroomImg2} className="w-full h-24 object-cover rounded-lg border border-[#333333]" />
+                        <button type="button" onClick={() => handleChange('showroomImg2', '')} className="absolute top-2 right-2 bg-black/60 hover:bg-red-500 text-white rounded p-1 text-[9px] uppercase font-bold tracking-widest transition-colors backdrop-blur-md">Remove</button>
+                      </div>
+                    )}
                     <input type="file" accept="image/*" onChange={(e) => handleImageUpload(e, 'showroomImg2')} className="text-xs text-white file:bg-[#D4AF37] file:border-0 file:rounded file:px-2 file:py-1 file:text-black cursor-pointer" />
                   </div>
                 </div>
@@ -320,7 +351,12 @@ export default function AdminSiteContent() {
                   <input type="text" value={contentData.showroomText3 || ''} onChange={(e) => handleChange('showroomText3', e.target.value)} className="w-full bg-[#000000] border border-[#333333] rounded-lg px-3 py-2 text-white text-sm mb-3 focus:border-[#D4AF37] focus:outline-none" required />
                   <label className="block text-xs text-gray-400 font-bold uppercase tracking-widest mb-2">Image</label>
                   <div className="flex flex-col gap-2">
-                    {contentData.showroomImg3 && <img src={contentData.showroomImg3} className="w-full h-20 object-cover rounded-md border border-[#333333]" />}
+                    {contentData.showroomImg3 && (
+                      <div className="relative">
+                        <img src={contentData.showroomImg3} className="w-full h-24 object-cover rounded-lg border border-[#333333]" />
+                        <button type="button" onClick={() => handleChange('showroomImg3', '')} className="absolute top-2 right-2 bg-black/60 hover:bg-red-500 text-white rounded p-1 text-[9px] uppercase font-bold tracking-widest transition-colors backdrop-blur-md">Remove</button>
+                      </div>
+                    )}
                     <input type="file" accept="image/*" onChange={(e) => handleImageUpload(e, 'showroomImg3')} className="text-xs text-white file:bg-[#D4AF37] file:border-0 file:rounded file:px-2 file:py-1 file:text-black cursor-pointer" />
                   </div>
                 </div>
@@ -330,7 +366,12 @@ export default function AdminSiteContent() {
                   <input type="text" value={contentData.showroomText4 || ''} onChange={(e) => handleChange('showroomText4', e.target.value)} className="w-full bg-[#000000] border border-[#333333] rounded-lg px-3 py-2 text-white text-sm mb-3 focus:border-[#D4AF37] focus:outline-none" required />
                   <label className="block text-xs text-gray-400 font-bold uppercase tracking-widest mb-2">Image</label>
                   <div className="flex flex-col gap-2">
-                    {contentData.showroomImg4 && <img src={contentData.showroomImg4} className="w-full h-20 object-cover rounded-md border border-[#333333]" />}
+                    {contentData.showroomImg4 && (
+                      <div className="relative">
+                        <img src={contentData.showroomImg4} className="w-full h-24 object-cover rounded-lg border border-[#333333]" />
+                        <button type="button" onClick={() => handleChange('showroomImg4', '')} className="absolute top-2 right-2 bg-black/60 hover:bg-red-500 text-white rounded p-1 text-[9px] uppercase font-bold tracking-widest transition-colors backdrop-blur-md">Remove</button>
+                      </div>
+                    )}
                     <input type="file" accept="image/*" onChange={(e) => handleImageUpload(e, 'showroomImg4')} className="text-xs text-white file:bg-[#D4AF37] file:border-0 file:rounded file:px-2 file:py-1 file:text-black cursor-pointer" />
                   </div>
                 </div>
@@ -395,7 +436,10 @@ export default function AdminSiteContent() {
                 <label className="block text-xs text-gray-400 font-bold uppercase tracking-widest mb-2">Store Image (Optional)</label>
                 <div className="flex items-center gap-4">
                   {contentData.storeImage && (
-                    <img src={contentData.storeImage} alt="Store preview" className="w-16 h-16 object-cover rounded-lg border border-[#333333]" />
+                    <div className="flex flex-col items-center gap-1">
+                      <img src={contentData.storeImage} alt="Store preview" className="w-16 h-16 object-cover rounded-lg border border-[#333333]" />
+                      <button type="button" onClick={() => handleChange('storeImage', '')} className="text-[10px] text-red-500 hover:text-red-400 uppercase tracking-widest font-bold">Remove</button>
+                    </div>
                   )}
                   <input type="file" accept="image/*" onChange={(e) => handleImageUpload(e, 'storeImage')} className="w-full bg-[#000000] border border-[#333333] rounded-xl px-4 py-2 text-white focus:border-[#D4AF37] focus:outline-none file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-bold file:bg-[#D4AF37] file:text-black hover:file:bg-[#b5952f] cursor-pointer" />
                 </div>
@@ -424,7 +468,10 @@ export default function AdminSiteContent() {
                 <label className="block text-xs text-gray-400 font-bold uppercase tracking-widest mb-2">Hero Image (Optional)</label>
                 <div className="flex items-center gap-4">
                   {contentData.imageUrl && (
-                    <img src={contentData.imageUrl} alt="Hero preview" className="w-16 h-16 object-cover rounded-lg border border-[#333333]" />
+                    <div className="flex flex-col items-center gap-1">
+                      <img src={contentData.imageUrl} alt="Hero preview" className="w-16 h-16 object-cover rounded-lg border border-[#333333]" />
+                      <button type="button" onClick={() => handleChange('imageUrl', '')} className="text-[10px] text-red-500 hover:text-red-400 uppercase tracking-widest font-bold">Remove</button>
+                    </div>
                   )}
                   <input type="file" accept="image/*" onChange={(e) => handleImageUpload(e, 'imageUrl')} className="w-full bg-[#000000] border border-[#333333] rounded-xl px-4 py-2 text-white focus:border-[#D4AF37] focus:outline-none file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-bold file:bg-[#D4AF37] file:text-black hover:file:bg-[#b5952f] cursor-pointer" />
                 </div>
