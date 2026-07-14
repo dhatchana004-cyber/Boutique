@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react'
 import { Check, Plus, ShoppingBag, Sparkles } from 'lucide-react'
 import { useCart } from '../../context/CartContext'

@@ -127,6 +127,9 @@ export default function Navbar() {
                 <button onClick={() => navigate('/account/profile')} className="w-full text-left px-4 py-3 text-[11px] font-sans tracking-widest uppercase text-[#D4AF37] hover:text-[#FFFFFF] hover:bg-[#FFFFFF]/5">My Profile</button>
                 <button onClick={() => navigate('/account/profile', { state: { activeTab: 'membership' } })} className="w-full text-left px-4 py-3 text-[11px] font-sans tracking-widest uppercase text-[#D4AF37] hover:text-[#FFFFFF] hover:bg-[#FFFFFF]/5">VIP Dashboard</button>
                 <button onClick={() => navigate('/account/orders')} className="w-full text-left px-4 py-3 text-[11px] font-sans tracking-widest uppercase text-[#D4AF37] hover:text-[#FFFFFF] hover:bg-[#FFFFFF]/5">Order History</button>
+                {user?.role === 'ADMIN' && (
+                  <button onClick={() => navigate('/admin')} className="w-full text-left px-4 py-3 text-[11px] font-sans tracking-widest uppercase text-[#D4AF37] hover:text-[#FFFFFF] hover:bg-[#FFFFFF]/5">Admin Panel</button>
+                )}
                 <button onClick={() => { logout(); navigate('/') }} className="w-full text-left px-4 py-3 text-[11px] font-sans tracking-widest uppercase text-red-500 hover:bg-red-50">Sign Out</button>
               </div>
             </div>
@@ -176,6 +179,9 @@ export default function Navbar() {
                 </div>
                 <Link to="/account/profile" className="text-[11px] font-sans font-semibold tracking-[0.2em] uppercase text-[#D4AF37]" onClick={() => setMenuOpen(false)}>My Profile</Link>
                 <button onClick={() => { navigate('/account/profile', { state: { activeTab: 'membership' } }); setMenuOpen(false); }} className="text-left text-[11px] font-sans font-semibold tracking-[0.2em] uppercase text-[#D4AF37]">VIP Dashboard</button>
+                {user?.role === 'ADMIN' && (
+                  <button onClick={() => { navigate('/admin'); setMenuOpen(false); }} className="text-left text-[11px] font-sans font-semibold tracking-[0.2em] uppercase text-[#D4AF37]">Admin Panel</button>
+                )}
                 <button onClick={() => { logout(); setMenuOpen(false); navigate('/') }} className="text-left text-[11px] font-sans font-semibold tracking-[0.2em] uppercase text-red-500">Sign Out</button>
              </div>
           ) : (

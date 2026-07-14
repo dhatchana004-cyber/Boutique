@@ -8,6 +8,7 @@ import toast from 'react-hot-toast'
 function ProfileOverview({ user, onUpdate, onAvatarUpload }) {
   const [editing, setEditing] = useState(false)
   const [uploading, setUploading] = useState(false)
+  const [imgError, setImgError] = useState(false)
   const fileInputRef = useRef(null)
   const [form, setForm] = useState({
     name: user?.name || '',
@@ -38,7 +39,8 @@ function ProfileOverview({ user, onUpdate, onAvatarUpload }) {
     }
   }
 
-  const avatarUrl = user?.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(user?.name || 'User')}&background=2B3FE7&color=fff`
+  const isValidAvatar = user?.avatar && user.avatar !== 'null' && user.avatar.trim() !== ''
+  const avatarUrl = isValidAvatar ? user.avatar : `https://ui-avatars.com/api/?name=${encodeURIComponent(user?.name || 'User')}&background=2B3FE7&color=fff`
 
   return (
     <div className="animate-in fade-in duration-500 backdrop-blur-2xl bg-[#000000]/10 border border-white/20 rounded-3xl p-8 shadow-[0_0_20px_rgba(0,0,0,0.1)]">
@@ -58,7 +60,20 @@ function ProfileOverview({ user, onUpdate, onAvatarUpload }) {
         {/* Clickable avatar */}
         <div className="relative cursor-pointer group" onClick={handleAvatarClick} title="Change profile picture">
           <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={handleFileChange} />
-          <img src={avatarUrl} alt="profile" className="w-20 h-20 rounded-full object-cover shadow-[0_0_15px_rgba(43,63,231,0.5)]" />
+          
+          {!imgError ? (
+            <img 
+              src={avatarUrl} 
+              alt="profile" 
+              onError={() => setImgError(true)}
+              className="w-20 h-20 rounded-full object-cover shadow-[0_0_15px_rgba(43,63,231,0.5)] bg-[#000]" 
+            />
+          ) : (
+            <div className="w-20 h-20 rounded-full bg-[#111] border border-white/20 flex items-center justify-center shadow-[0_0_15px_rgba(43,63,231,0.5)]">
+              <span className="text-2xl font-bold text-[#D4AF37] uppercase">{user?.name?.charAt(0) || 'U'}</span>
+            </div>
+          )}
+
           <div className={`absolute inset-0 rounded-full flex items-center justify-center transition-all ${uploading ? 'bg-black/60' : 'bg-black/0 group-hover:bg-black/50'}`}>
             {uploading
               ? <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin" />
@@ -959,6 +974,7 @@ export default function UserProfilePage() {
   const navigate  = useNavigate()
   const location  = useLocation()
   const [activeTab, setActiveTab] = useState('profile')
+  const [sidebarImgError, setSidebarImgError] = useState(false)
 
   // Honour incoming tab request from sidebar links on other pages
   useEffect(() => {
@@ -984,7 +1000,8 @@ export default function UserProfilePage() {
     )
   }
 
-  const avatarUrl = user?.avatar || `https://ui-avatars.com/api/?name=${user?.name || 'User'}&background=2B3FE7&color=fff`;
+  const isValidAvatar = user?.avatar && user.avatar !== 'null' && user.avatar.trim() !== ''
+  const avatarUrl = isValidAvatar ? user.avatar : `https://ui-avatars.com/api/?name=${encodeURIComponent(user?.name || 'User')}&background=2B3FE7&color=fff`;
 
   const tabs = [
     { id: 'profile', label: 'Profile Overview', icon: User },
@@ -1017,7 +1034,18 @@ export default function UserProfilePage() {
           <aside className="w-full md:w-72 flex-shrink-0">
             <div className="backdrop-blur-2xl bg-[#000000]/10 border border-white/20 rounded-3xl p-6 shadow-[0_0_30px_rgba(0,0,0,0.2)] sticky top-24">
               <div className="flex items-center gap-4 mb-8 pb-8 border-b border-white/10">
-                <img src={avatarUrl} alt="profile" className="w-14 h-14 rounded-full ring-2 ring-[#D4AF37] shadow-[0_0_15px_rgba(43,63,231,0.5)]" />
+                {!sidebarImgError ? (
+                  <img 
+                    src={avatarUrl} 
+                    alt="profile" 
+                    onError={() => setSidebarImgError(true)}
+                    className="w-14 h-14 rounded-full ring-2 ring-[#D4AF37] shadow-[0_0_15px_rgba(43,63,231,0.5)] bg-[#000]" 
+                  />
+                ) : (
+                  <div className="w-14 h-14 rounded-full bg-[#111] ring-2 ring-[#D4AF37] flex items-center justify-center shadow-[0_0_15px_rgba(43,63,231,0.5)]">
+                    <span className="text-xl font-bold text-[#D4AF37] uppercase">{user?.name?.charAt(0) || 'U'}</span>
+                  </div>
+                )}
                 <div>
                   <p className="font-black text-white text-base leading-tight">{user?.name || 'Luxe User'}</p>
                   <p className="text-[10px] text-[#D4AF37] font-black uppercase tracking-widest mt-1">Luxe Member</p>

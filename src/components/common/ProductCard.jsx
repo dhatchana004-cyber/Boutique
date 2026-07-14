@@ -113,7 +113,7 @@ export default function ProductCard({ product, variants }) {
           {/* Wishlist Button Overlay (Top Right) */}
           <button 
             onClick={handleWishlistClick}
-            className="absolute top-4 right-4 z-10 w-9 h-9 rounded-full bg-[#111111] flex items-center justify-center shadow-md hover:scale-110 transition-all duration-300 border border-[#333333]"
+            className="absolute top-4 right-4 z-30 w-9 h-9 rounded-full bg-[#111111] flex items-center justify-center shadow-md hover:scale-110 transition-all duration-300 border border-[#333333]"
           >
             <Heart 
               size={15} 

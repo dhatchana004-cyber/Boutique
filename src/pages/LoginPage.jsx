@@ -28,14 +28,19 @@ export default function LoginPage() {
     setError('')
     try {
       if (tab === 'signin') {
-        await login(form.email, form.password)
+        const res = await login(form.email, form.password)
+        if (res.user.role === 'ADMIN') {
+          navigate('/admin')
+        } else {
+          navigate('/')
+        }
       } else {
         if (form.password !== form.confirmPassword) {
           throw new Error('Passwords do not match')
         }
         await register(form.name, form.email, form.phone, form.password)
+        navigate('/')
       }
-      navigate('/')
     } catch (err) {
       setError(err.message)
     } finally {

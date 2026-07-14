@@ -1,6 +1,7 @@
 import { createContext, useContext, useState, useEffect } from 'react'
 import { wishlistService } from '../services/wishlistService'
 import { useAuth } from './AuthContext'
+import toast from 'react-hot-toast'
 
 const WishlistContext = createContext()
 
@@ -32,25 +33,48 @@ export function WishlistProvider({ children }) {
 
   const toggleWishlist = async (productId) => {
     if (!isLoggedIn) {
+      toast.error('Please login to add favorites')
       window.location.href = '/login'
       return false
     }
+    
+    // Optimistic Update
+    const originallyWished = isWished(productId);
+    if (originallyWished) {
+      setWishlistItems(prev => prev.filter(item => Number(item.productId) !== Number(productId)))
+    } else {
+      setWishlistItems(prev => [...prev, { productId: Number(productId) }])
+    }
+
     try {
       const res = await wishlistService.toggleWishlist(productId)
       if (res.success) {
+        toast.success(res.wished ? 'Added to Wishlist' : 'Removed from Wishlist')
         if (res.wished) {
-          // It was added. We need to fetch the full item or at least push a placeholder.
-          // Simplest is to re-fetch the wishlist to get product details, or just get it.
-          const fresh = await wishlistService.getWishlist()
-          if (fresh.success) setWishlistItems(fresh.data)
-        } else {
-          // It was removed
-          setWishlistItems(prev => prev.filter(item => Number(item.productId) !== Number(productId)))
+          // Silently fetch full details in background so Wishlist page has full product data
+          wishlistService.getWishlist().then(fresh => {
+            if (fresh.success) setWishlistItems(fresh.data)
+          }).catch(console.error)
         }
         return res.wished
+      } else {
+        // Revert optimistic update on failure
+        toast.error('Failed to update wishlist')
+        if (originallyWished) {
+          setWishlistItems(prev => [...prev, { productId: Number(productId) }])
+        } else {
+          setWishlistItems(prev => prev.filter(item => Number(item.productId) !== Number(productId)))
+        }
       }
     } catch (e) {
       console.error(e)
+      toast.error('Error updating wishlist')
+      // Revert optimistic update on error
+      if (originallyWished) {
+        setWishlistItems(prev => [...prev, { productId: Number(productId) }])
+      } else {
+        setWishlistItems(prev => prev.filter(item => Number(item.productId) !== Number(productId)))
+      }
     }
     return null
   }
