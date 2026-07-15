@@ -1,12 +1,62 @@
-import { useState, useRef } from 'react'
-import { Pencil, Trash2, Plus, Upload } from 'lucide-react'
+import { useState, useRef, useEffect } from 'react'
+import { Pencil, Trash2, Plus, Upload, List } from 'lucide-react'
 import { adminService } from '../../services/adminService'
 import { Modal, ConfirmDialog, InputField, SelectField } from './AdminUI'
 
 const EMPTY = { name:'', brand:'', category:'Sarees', price:'', description:'', image:'', stockQuantity:'', isNew:false }
-const CATS = ['Sarees','Jewellery','Lehengas','Accessories','Return Gifts'].map(c=>({value:c,label:c}))
 
-function ProductForm({ initial, onSave, onCancel, saving }) {
+function CategoryModal({ categories, onClose, setCategories }) {
+  const [list, setList] = useState(categories)
+  const [newCat, setNewCat] = useState('')
+
+  const handleAdd = async () => { 
+    if(newCat && !list.includes(newCat)) { 
+      const newList = [...list, newCat]
+      setList(newList)
+      setNewCat('')
+      try {
+        await adminService.updateContent('categories', { list: newList })
+        setCategories(newList)
+        alert('Category added successfully!')
+      } catch(e) { console.error('Add category error:', e); alert('Failed to add category: ' + (e.response?.data?.message || e.message)) }
+    } 
+  }
+
+  const handleRemove = async (cat) => {
+    if(!window.confirm(`Are you sure you want to delete "${cat}"?`)) return
+    const newList = list.filter(c => c !== cat)
+    setList(newList)
+    try {
+      await adminService.updateContent('categories', { list: newList })
+      setCategories(newList)
+      alert('Category deleted successfully!')
+    } catch(e) { console.error('Delete category error:', e); alert('Failed to delete category: ' + (e.response?.data?.message || e.message)) }
+  }
+
+  return (
+    <div className="space-y-4">
+      <div className="flex gap-2 items-end">
+        <div className="flex-1"><InputField label="New Category" value={newCat} onChange={e=>setNewCat(e.target.value)} /></div>
+        <button onClick={handleAdd} className="px-4 py-2.5 bg-[#D4AF37] text-white rounded-xl font-bold h-[42px] mb-1">Add</button>
+      </div>
+      <div className="space-y-2 max-h-60 overflow-y-auto">
+        {list.map(c => (
+          <div key={c} className="flex justify-between items-center bg-[#1A1A1A] p-3 rounded-xl border border-[#333333]">
+            <span className="text-sm text-gray-200">{c}</span>
+            <button onClick={()=>handleRemove(c)} className="text-red-500 hover:text-red-400 p-1"><Trash2 size={16}/></button>
+          </div>
+        ))}
+        {list.length === 0 && <p className="text-xs text-gray-500 text-center py-4">No categories added</p>}
+      </div>
+      <div className="flex justify-end pt-4 border-t border-[#333333]">
+        <button onClick={onClose} className="px-6 py-2.5 text-sm bg-[#D4AF37] text-white rounded-xl font-bold">Done</button>
+      </div>
+    </div>
+  )
+}
+
+function ProductForm({ initial, onSave, onCancel, saving, categories }) {
+  const CATS = categories.map(c=>({value:c,label:c}))
   const [f, setF] = useState(initial || EMPTY)
   const [uploading, setUploading] = useState(false)
   const fileInputRef = useRef(null)
@@ -74,9 +124,18 @@ function ProductForm({ initial, onSave, onCancel, saving }) {
 }
 
 export default function AdminProducts({ products, onRefresh }) {
-  const [modal, setModal] = useState(null) // 'add' | product obj for edit
+  const [modal, setModal] = useState(null) // 'add' | 'categories' | product obj for edit
   const [confirm, setConfirm] = useState(null)
   const [saving, setSaving] = useState(false)
+  const [categories, setCategories] = useState(['Sarees','Jewellery','Lehengas','Accessories','Return Gifts'])
+  const [activeTab, setActiveTab] = useState('All')
+
+  useEffect(() => {
+    adminService.getContent('categories').then(data => {
+      const list = data?.data?.list || data?.list
+      if (list && Array.isArray(list)) setCategories(list)
+    }).catch(console.error)
+  }, [])
 
   const handleSave = async (data) => {
     setSaving(true)
@@ -99,9 +158,33 @@ export default function AdminProducts({ products, onRefresh }) {
       <div className="bg-[#000000] rounded-2xl shadow-sm border border-[#333333] overflow-hidden">
         <div className="px-6 py-5 border-b border-[#333333] flex items-center justify-between">
           <h3 className="font-bold text-gray-100">All Products ({products.length})</h3>
-          <button onClick={()=>setModal('add')} className="flex items-center gap-2 px-4 py-2.5 bg-[#D4AF37] text-white text-xs font-bold rounded-xl hover:bg-blue-700">
-            <Plus size={16} /> Add Product
+          <div className="flex items-center gap-3">
+            <button onClick={()=>setModal('categories')} className="flex items-center gap-2 px-4 py-2.5 bg-[#1A1A1A] border border-[#333333] text-gray-300 text-xs font-bold rounded-xl hover:text-white transition-colors">
+              <List size={16} /> Manage Categories
+            </button>
+            <button onClick={()=>setModal('add')} className="flex items-center gap-2 px-4 py-2.5 bg-[#D4AF37] text-white text-xs font-bold rounded-xl hover:bg-blue-700">
+              <Plus size={16} /> Add Product
+            </button>
+          </div>
+        </div>
+
+        {/* Category Tabs */}
+        <div className="px-6 py-3 flex gap-2 overflow-x-auto border-b border-[#333333] no-scrollbar">
+          <button 
+            onClick={()=>setActiveTab('All')}
+            className={`px-4 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-colors ${activeTab==='All'?'bg-[#D4AF37] text-black':'bg-[#1A1A1A] text-gray-400 hover:text-gray-200'}`}
+          >
+            All
           </button>
+          {categories.map(c => (
+            <button 
+              key={c}
+              onClick={()=>setActiveTab(c)}
+              className={`px-4 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-colors ${activeTab===c?'bg-[#D4AF37] text-black':'bg-[#1A1A1A] text-gray-400 hover:text-gray-200'}`}
+            >
+              {c}
+            </button>
+          ))}
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
@@ -116,7 +199,7 @@ export default function AdminProducts({ products, onRefresh }) {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-50">
-              {products.map(p=>(
+              {products.filter(p => activeTab === 'All' || p.category.toLowerCase() === activeTab.toLowerCase()).map(p=>(
                 <tr key={p.id} className="hover:bg-[#111111]/50">
                   <td className="px-6 py-4 flex items-center gap-3">
                     <img src={p.image} alt="" className="w-10 h-10 rounded-lg object-cover bg-[#1A1A1A]" />
@@ -143,9 +226,15 @@ export default function AdminProducts({ products, onRefresh }) {
         </div>
       </div>
 
-      {modal && (
+      {modal && modal === 'categories' && (
+        <Modal title="Manage Categories" onClose={()=>setModal(null)}>
+          <CategoryModal categories={categories} onClose={()=>setModal(null)} setCategories={setCategories} />
+        </Modal>
+      )}
+
+      {modal && modal !== 'categories' && (
         <Modal title={modal==='add'?'Add Product':'Edit Product'} onClose={()=>setModal(null)}>
-          <ProductForm initial={modal==='add'?null:modal} onSave={handleSave} onCancel={()=>setModal(null)} saving={saving}/>
+          <ProductForm initial={modal==='add'?null:modal} onSave={handleSave} onCancel={()=>setModal(null)} saving={saving} categories={categories}/>
         </Modal>
       )}
       {confirm && <ConfirmDialog message="Are you sure you want to delete this product? This action cannot be undone." onConfirm={handleDelete} onCancel={()=>setConfirm(null)} />}

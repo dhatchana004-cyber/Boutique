@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
+import api from '../services/api'
 import { productService } from '../services/productService'
 import { useWishlist } from '../context/WishlistContext'
 import { Heart, SlidersHorizontal } from 'lucide-react'
@@ -25,14 +26,36 @@ export default function ProductListPage() {
   const searchQuery = searchParams.get('search') || ''
   const activeSort = searchParams.get('sort') || 'featured'
 
-  const categories = [
-    { name: 'All Boutique', value: 'all' },
-    { name: 'Sarees', value: 'sarees' },
-    { name: 'Jewellery', value: 'jewellery' },
-    { name: 'Lehengas', value: 'lehengas' },
-    { name: 'Accessories', value: 'accessories' },
-    { name: 'Return Gifts', value: 'return gifts' }
-  ]
+  const [categories, setCategories] = useState([{ name: 'All Boutique', value: 'all' }])
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const res = await api.get('/content/categories')
+        const list = res.data?.data?.list || ['Sarees', 'Jewellery', 'Lehengas', 'Accessories', 'Return Gifts']
+        setCategories([
+          { name: 'All Boutique', value: 'all' },
+          ...list.map(c => ({ name: c, value: c.toLowerCase() }))
+        ])
+      } catch (err) {
+        console.error('Failed to fetch categories:', err)
+        setCategories([
+          { name: 'All Boutique', value: 'all' },
+          { name: 'Sarees', value: 'sarees' },
+          { name: 'Jewellery', value: 'jewellery' },
+          { name: 'Lehengas', value: 'lehengas' },
+          { name: 'Accessories', value: 'accessories' },
+          { name: 'Return Gifts', value: 'return gifts' }
+        ])
+      }
+    }
+    
+    fetchCategories()
+
+    // Refresh categories when switching tabs back to this page
+    window.addEventListener('focus', fetchCategories)
+    return () => window.removeEventListener('focus', fetchCategories)
+  }, [])
 
   const matchedCategory = categories.find(c => c.value === searchQuery.toLowerCase())?.value
   const displayActiveCategory = matchedCategory || activeCategory

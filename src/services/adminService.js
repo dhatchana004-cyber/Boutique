@@ -23,7 +23,7 @@ export const adminService = {
 
   // Content Management
   getContent: async (pageName) => (await api.get(`/content/${pageName}`)).data,
-  updateContent: async (pageName, data) => (await api.post(`/admin/content/${pageName}`, data)).data,
+  updateContent: async (pageName, data) => (await api.put(`/admin/content/${pageName}`, data)).data,
 
   // Enquiries
   getEnquiries: async () => (await api.get('/enquiries')).data,
