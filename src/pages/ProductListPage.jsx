@@ -34,6 +34,9 @@ export default function ProductListPage() {
     { name: 'Return Gifts', value: 'return gifts' }
   ]
 
+  const matchedCategory = categories.find(c => c.value === searchQuery.toLowerCase())?.value
+  const displayActiveCategory = matchedCategory || activeCategory
+
   useEffect(() => {
     const fetchProducts = async () => {
       setLoading(true)
@@ -67,6 +70,7 @@ export default function ProductListPage() {
 
   const handleCategorySelect = (val) => {
     const newParams = new URLSearchParams(searchParams)
+    newParams.delete('search')
     if (val === 'all') {
       newParams.delete('category')
     } else {
@@ -90,76 +94,8 @@ export default function ProductListPage() {
       <SEO title="Our Collections" description="Explore our curated boutique collections of heritage wear, jewellery, and luxury return gifts." />
       <PageTransition><div className="min-h-screen bg-[#000000] pb-24">
       
-      {/* ── Top Header Banner (Burgundy Theme) ── */}
-      {(!searchQuery && activeCategory === 'all') && (
-        <div className="max-w-7xl mx-auto px-6 pt-8 pb-4">
-        <div className="bg-[#111111] border border-[#D4AF37]/30 text-[#FFFFFF] rounded-3xl p-8 md:p-12 relative overflow-hidden shadow-[0_0_30px_rgba(212,175,55,0.05)] flex flex-col justify-center min-h-[220px]">
-          <div className="absolute top-0 right-0 w-64 h-64 bg-[#D4AF37]/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
-          <div className="absolute bottom-0 left-0 w-64 h-64 bg-[#D4AF37]/5 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
-          
-          <div className="relative z-10">
-            <span className="inline-block text-[9px] font-sans font-bold tracking-[0.3em] text-[#D4AF37] mb-4 bg-[#D4AF37]/10 px-3 py-1 rounded-sm uppercase">
-              {content.heritageTag}
-            </span>
-            <h1 className="text-3xl md:text-5xl font-serif text-[#FFFFFF] mb-4 tracking-wide font-normal">
-              {content.heritageTitle}
-            </h1>
-            <p className="text-[#A3A3A3] font-sans text-xs md:text-sm font-light max-w-2xl leading-relaxed whitespace-pre-line">
-              {content.heritageDesc}
-            </p>
-          </div>
-        </div>
-        </div>
-      )}
-
-      {/* ── Showroom Gallery Section ── */}
-      {(!searchQuery && activeCategory === 'all') && (
-        <div className="max-w-7xl mx-auto px-6 mt-10">
-          <div className="bg-[#000000] border border-[#D4AF37]/30 rounded-3xl p-6 md:p-8 shadow-[0_0_30px_rgba(212,175,55,0.03)]">
-          <div className="max-w-xl mb-6">
-            <span className="text-[10px] font-sans font-bold tracking-[0.3em] text-[#D4AF37] uppercase block mb-2">
-              {content.atelierTag}
-            </span>
-            <h2 className="text-2xl md:text-3xl font-serif text-[#FFFFFF]">
-              {content.atelierTitle}
-            </h2>
-            <p className="text-gray-400 font-sans text-xs mt-2 leading-relaxed font-light whitespace-pre-line">
-              {content.atelierDesc}
-            </p>
-          </div>
-
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="group relative aspect-[3/4] overflow-hidden rounded-2xl bg-[#111111] shadow-sm border border-[#D4AF37]/20">
-              <img src={content.showroomImg1 || "/assets/images/boutique_4.jpg"} alt="Showroom Display" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#FFFFFF]/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end p-4">
-                <p className="text-white text-[9px] font-sans tracking-widest uppercase font-semibold">{content.showroomText1}</p>
-              </div>
-            </div>
-            <div className="group relative aspect-[3/4] overflow-hidden rounded-2xl bg-[#111111] shadow-sm border border-[#D4AF37]/20">
-              <img src={content.showroomImg2 || "/assets/images/boutique_1.jpg"} alt="Showroom Display" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#FFFFFF]/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end p-4">
-                <p className="text-white text-[9px] font-sans tracking-widest uppercase font-semibold">{content.showroomText2}</p>
-              </div>
-            </div>
-            <div className="group relative aspect-[3/4] overflow-hidden rounded-2xl bg-[#111111] shadow-sm border border-[#D4AF37]/20">
-              <img src={content.showroomImg3 || "/assets/images/boutique_2.jpg"} alt="Showroom Display" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#FFFFFF]/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end p-4">
-                <p className="text-white text-[9px] font-sans tracking-widest uppercase font-semibold">{content.showroomText3}</p>
-              </div>
-            </div>
-            <div className="group relative aspect-[3/4] overflow-hidden rounded-2xl bg-[#111111] shadow-sm border border-[#D4AF37]/20">
-              <img src={content.showroomImg4 || "/assets/images/boutique_3.jpg"} alt="Showroom Display" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#FFFFFF]/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end p-4">
-                <p className="text-white text-[9px] font-sans tracking-widest uppercase font-semibold">{content.showroomText4}</p>
-              </div>
-            </div>
-          </div>
-        </div>
-        </div>
-      )}
-
       {/* ── Main Workspace: Sidebar & Grid ── */}
-      <div className={`max-w-7xl mx-auto px-6 ${(!searchQuery && activeCategory === 'all') ? 'mt-12' : 'pt-8'}`}>
+      <div className="max-w-7xl mx-auto px-6 pt-8">
         <div className="flex flex-col lg:flex-row gap-12">
           
           {/* Left Column: Sidebar Filters */}
@@ -185,7 +121,7 @@ export default function ProductListPage() {
               </p>
               <div className="flex flex-col gap-2">
                 {categories.map((cat) => {
-                  const isActive = activeCategory === cat.value
+                  const isActive = displayActiveCategory === cat.value
                   return (
                     <button
                       key={cat.value}

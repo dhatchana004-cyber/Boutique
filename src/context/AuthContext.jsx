@@ -4,6 +4,11 @@ import API from '../services/api';
 const AuthContext = createContext()
 
 export function AuthProvider({ children }) {
+  const getAvatarUrl = (url, name) => {
+    if (!url || url === 'null' || url.trim() === '') return `https://ui-avatars.com/api/?name=${encodeURIComponent(name || 'User')}&background=2B3FE7&color=fff`;
+    if (url.startsWith('http') || url.startsWith('data:')) return url;
+    return `${import.meta.env.VITE_API_URL || 'http://localhost:5000'}${url}`;
+  };
   const [user, setUser] = useState(() => {
     const saved = localStorage.getItem('luxe_user')
     return saved ? JSON.parse(saved) : null
@@ -23,7 +28,7 @@ export function AuthProvider({ children }) {
         const finalUser = {
           ...userData,
           phone: userData.phone || '', 
-          avatar: userData.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(userData.name)}&background=2B3FE7&color=fff`,
+          avatar: getAvatarUrl(userData.avatar, userData.name),
           memberSince: userData.createdAt ? new Date(userData.createdAt).getFullYear() : '2024'
         };
 
@@ -56,7 +61,7 @@ export function AuthProvider({ children }) {
       headers: { 'Content-Type': 'multipart/form-data' },
     });
     if (res.data.success) {
-      const updatedUser = { ...user, avatar: res.data.avatarUrl };
+      const updatedUser = { ...user, avatar: getAvatarUrl(res.data.avatarUrl, user.name) };
       setUser(updatedUser);
       localStorage.setItem('luxe_user', JSON.stringify(updatedUser));
     }

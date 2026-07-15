@@ -44,8 +44,12 @@ function ProfileOverview({ user, onUpdate, onAvatarUpload }) {
     }
   }
 
-  const isValidAvatar = user?.avatar && user.avatar !== 'null' && user.avatar.trim() !== ''
-  const avatarUrl = isValidAvatar ? user.avatar : `https://ui-avatars.com/api/?name=${encodeURIComponent(user?.name || 'User')}&background=2B3FE7&color=fff`
+  const getAvatarUrl = (url) => {
+    if (!url || url === 'null' || url.trim() === '') return `https://ui-avatars.com/api/?name=${encodeURIComponent(user?.name || 'User')}&background=2B3FE7&color=fff`;
+    if (url.startsWith('http') || url.startsWith('data:')) return url;
+    return `${import.meta.env.VITE_API_URL || 'http://localhost:5000'}${url}`;
+  };
+  const avatarUrl = getAvatarUrl(user?.avatar);
 
   return (
     <div className="animate-in fade-in duration-500 backdrop-blur-2xl bg-[#000000]/10 border border-white/20 rounded-3xl p-8 shadow-[0_0_20px_rgba(0,0,0,0.1)]">

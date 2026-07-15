@@ -71,13 +71,7 @@ export default function Navbar() {
                 autoFocus
               />
               <VoiceSearch onResult={handleVoiceResult} />
-              <button
-                onClick={() => setVisualSearchOpen(true)}
-                className="p-1.5 text-[#FFFFFF]/60 hover:text-[#FFFFFF] transition-colors rounded-full"
-                title="Visual Search"
-              >
-                <Camera size={14} />
-              </button>
+
               <button onClick={() => setSearchActive(false)} className="p-1.5 text-[#FFFFFF]/40 hover:text-[#FFFFFF] transition-colors rounded-full ml-1">
                 <X size={14} />
               </button>
@@ -87,9 +81,7 @@ export default function Navbar() {
               <button onClick={() => setSearchActive(true)} className="text-[#FFFFFF] hover:text-[#D4AF37] transition-colors p-1">
                 <Search size={18} strokeWidth={1.5} />
               </button>
-              <button onClick={() => setVisualSearchOpen(true)} className="text-[#FFFFFF] hover:text-[#D4AF37] transition-colors p-1" title="Visual Search">
-                <Camera size={18} strokeWidth={1.5} />
-              </button>
+
             </div>
           )}
 
@@ -198,7 +190,7 @@ export default function Navbar() {
         </div>
       )}
 
-      <VisualSearchModal isOpen={visualSearchOpen} onClose={() => setVisualSearchOpen(false)} />
+
     </nav>
   )
 }

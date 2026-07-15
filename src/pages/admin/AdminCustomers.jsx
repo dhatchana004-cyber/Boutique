@@ -62,6 +62,11 @@ function CustomerForm({ initial, onSave, onCancel, saving }) {
 }
 
 export default function AdminCustomers({ customers, orders = [], onRefresh }) {
+  const getAvatarUrl = (url) => {
+    if (!url || url === 'null' || url.trim() === '') return '';
+    if (url.startsWith('http') || url.startsWith('data:')) return url;
+    return `${import.meta.env.VITE_API_URL || 'http://localhost:5000'}${url}`;
+  };
   const [confirm, setConfirm] = useState(null) // id to delete
   const [modal, setModal] = useState(null) // 'add' | customer obj for edit
   const [saving, setSaving] = useState(false)
@@ -119,7 +124,7 @@ export default function AdminCustomers({ customers, orders = [], onRefresh }) {
                   <tr key={c.id} className="hover:bg-[#111111]/50">
                     <td className="px-6 py-4 flex items-center gap-3 cursor-pointer group" onClick={() => setSelectedCustomer(c)}>
                       {c.avatar ? (
-                        <img src={c.avatar} className="w-8 h-8 rounded-full object-cover border border-[#333333] ring-2 ring-transparent group-hover:ring-blue-500 transition-all" />
+                        <img src={getAvatarUrl(c.avatar)} className="w-8 h-8 rounded-full object-cover border border-[#333333] ring-2 ring-transparent group-hover:ring-blue-500 transition-all" />
                       ) : (
                         <UserCircle size={32} className="text-gray-300 group-hover:text-blue-500 transition-colors" />
                       )}
@@ -197,7 +202,7 @@ export default function AdminCustomers({ customers, orders = [], onRefresh }) {
                 <div className="p-6 flex flex-col items-center text-center space-y-6 bg-[#111111]/50">
                   <div className="relative">
                     {c.avatar ? (
-                      <img src={c.avatar} className="w-24 h-24 rounded-2xl object-cover shadow-md border border-[#333333]" alt={c.name} />
+                      <img src={getAvatarUrl(c.avatar)} className="w-24 h-24 rounded-2xl object-cover shadow-md border border-[#333333]" alt={c.name} />
                     ) : (
                       <UserCircle size={96} className="text-gray-300 bg-[#000000] rounded-full shadow-sm" />
                     )}
