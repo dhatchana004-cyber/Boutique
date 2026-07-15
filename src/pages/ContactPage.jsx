@@ -26,6 +26,7 @@ export default function ContactPage() {
   })
   const [isSubmitted, setIsSubmitted] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [notification, setNotification] = useState(null)
   
   const { content } = useSiteContent('contact', {
     headerTag: 'Get In Touch', headerTitle: 'Connect With Us', headerDesc: 'Whether you seek a bespoke bridal design, wish to explore corporate return gifts, or desire a personal boutique walkthrough, our concierge team is at your service.',
@@ -50,7 +51,7 @@ export default function ContactPage() {
       }
     } catch (error) {
       console.error("Failed to submit enquiry:", error)
-      alert("Failed to submit enquiry. Please try again.")
+      setNotification({ message: 'Failed to submit enquiry. Please try again.', type: 'error' })
     } finally {
       setIsSubmitting(false)
     }
@@ -412,6 +413,27 @@ export default function ContactPage() {
         </motion.div>
 
       </div>
+
+      {/* Custom Notification Modal */}
+      {notification && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
+          <div className="bg-[#111111] w-full max-w-sm rounded-2xl border border-[#333333] shadow-2xl overflow-hidden p-6 text-center animate-slide-up">
+            <div className={`w-12 h-12 rounded-full mx-auto flex items-center justify-center mb-4 ${notification.type === 'error' ? 'bg-red-500/20 text-red-500' : 'bg-green-500/20 text-green-500'}`}>
+              {notification.type === 'error' ? '✕' : '✓'}
+            </div>
+            <h3 className="text-lg font-bold text-white mb-2">
+              {notification.type === 'error' ? 'Error' : 'Success'}
+            </h3>
+            <p className="text-sm text-gray-400 mb-6">{notification.message}</p>
+            <button 
+              onClick={() => setNotification(null)}
+              className="w-full py-3 bg-[#D4AF37] text-black font-bold uppercase tracking-wider text-xs rounded-xl hover:bg-yellow-500 transition-colors"
+            >
+              OK
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

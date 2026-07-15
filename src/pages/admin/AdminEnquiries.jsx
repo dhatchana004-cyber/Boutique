@@ -7,6 +7,7 @@ export default function AdminEnquiries() {
   const [searchTerm, setSearchTerm] = useState('')
   const [loading, setLoading] = useState(true)
   const [expandedId, setExpandedId] = useState(null)
+  const [notification, setNotification] = useState(null) // { message: string, type: 'error' | 'success' }
 
   useEffect(() => {
     loadEnquiries()
@@ -31,7 +32,7 @@ export default function AdminEnquiries() {
       setEnquiries(enquiries.map(e => e.id === id ? { ...e, status } : e))
     } catch (err) {
       console.error(err)
-      alert('Failed to update status')
+      setNotification({ message: 'Failed to update status', type: 'error' })
     }
   }
 
@@ -40,9 +41,10 @@ export default function AdminEnquiries() {
     try {
       await adminService.deleteEnquiry(id)
       setEnquiries(enquiries.filter(e => e.id !== id))
+      setNotification({ message: 'Enquiry deleted successfully', type: 'success' })
     } catch (err) {
       console.error(err)
-      alert('Failed to delete enquiry')
+      setNotification({ message: 'Failed to delete enquiry', type: 'error' })
     }
   }
 
@@ -208,6 +210,27 @@ export default function AdminEnquiries() {
                 </div>
               </div>
             ))}
+          </div>
+        </div>
+      )}
+
+      {/* Custom Notification Modal */}
+      {notification && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
+          <div className="bg-[#111111] w-full max-w-sm rounded-2xl border border-[#333333] shadow-2xl overflow-hidden p-6 text-center animate-slide-up">
+            <div className={`w-12 h-12 rounded-full mx-auto flex items-center justify-center mb-4 ${notification.type === 'error' ? 'bg-red-500/20 text-red-500' : 'bg-green-500/20 text-green-500'}`}>
+              {notification.type === 'error' ? '✕' : '✓'}
+            </div>
+            <h3 className="text-lg font-bold text-white mb-2">
+              {notification.type === 'error' ? 'Error' : 'Success'}
+            </h3>
+            <p className="text-sm text-gray-400 mb-6">{notification.message}</p>
+            <button 
+              onClick={() => setNotification(null)}
+              className="w-full py-3 bg-[#D4AF37] text-black font-bold uppercase tracking-wider text-xs rounded-xl hover:bg-yellow-500 transition-colors"
+            >
+              OK
+            </button>
           </div>
         </div>
       )}
