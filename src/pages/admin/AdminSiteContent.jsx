@@ -3,13 +3,19 @@ import { adminService } from '../../services/adminService';
 import { Save, Loader } from 'lucide-react';
 import { getSitePageContent, saveSiteContent } from '../../hooks/useSiteContent';
 
-const PAGES = ['home', 'boutique', 'return-gifts', 'contact'];
+const PAGES = ['home', 'boutique', 'return-gifts', 'about', 'contact'];
 
 export default function AdminSiteContent() {
   const [activeTab, setActiveTab] = useState('home');
   const [contentData, setContentData] = useState({});
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
+
+  const getImageUrl = (url) => {
+    if (!url) return '';
+    if (url.startsWith('http') || url.startsWith('data:')) return url;
+    return `${import.meta.env.VITE_API_URL || 'http://localhost:5000'}${url}`;
+  };
 
   useEffect(() => {
     loadContent();
@@ -64,6 +70,11 @@ export default function AdminSiteContent() {
       step2Title: 'Customization', step2Desc: 'Select products, bespoke packaging, ribbons, and personalized name tags or logos.',
       step3Title: 'Delivery', step3Desc: 'Relax as we handle the logistics, ensuring pristine, on-time delivery to your venue.',
       inquiryTitle: 'Request a Quote', inquiryDesc: 'Fill out the details below, and our gifting concierge will contact you within 24 hours.'
+    };
+    if (page === 'about') return {
+      heroTag: 'Our Legacy', heroTitle: 'A Tradition of Excellence', heroDesc: 'Founded on the principles of timeless craftsmanship and uncompromising quality, Luxe Precision brings you curations that define heritage and sophistication.',
+      img1: 'https://images.unsplash.com/photo-1607344645866-009c320b63e0?q=80&w=1200', img2: 'https://images.unsplash.com/photo-1549465220-1a8b9238cd48?q=80&w=800',
+      quoteText: '"We don\'t just create garments; we weave stories of heritage, preserving the art of the loom for the modern connoisseur."', quoteAuthor: '— The Founders'
     };
     return {};
   };
@@ -147,7 +158,7 @@ export default function AdminSiteContent() {
                 <div className="flex items-center gap-4">
                   {contentData.imageUrl && (
                     <div className="flex flex-col items-center gap-1">
-                      <img src={contentData.imageUrl} alt="Hero preview" className="w-16 h-16 object-cover rounded-lg border border-[#333333]" />
+                      <img src={getImageUrl(contentData.imageUrl)} alt="Hero preview" className="w-16 h-16 object-cover rounded-lg border border-[#333333]" />
                       <button type="button" onClick={() => handleChange('imageUrl', '')} className="text-[10px] text-red-500 hover:text-red-400 uppercase tracking-widest font-bold">Remove</button>
                     </div>
                   )}
@@ -216,7 +227,7 @@ export default function AdminSiteContent() {
                   <div className="flex flex-col gap-2">
                     {contentData.editorialImg1 && (
                       <div className="relative">
-                        <img src={contentData.editorialImg1} className="w-full h-24 object-cover rounded-lg border border-[#333333]" />
+                        <img src={getImageUrl(contentData.editorialImg1)} className="w-full h-24 object-cover rounded-lg border border-[#333333]" />
                         <button type="button" onClick={() => handleChange('editorialImg1', '')} className="absolute top-2 right-2 bg-black/60 hover:bg-red-500 text-white rounded p-1 text-[9px] uppercase font-bold tracking-widest transition-colors backdrop-blur-md">Remove</button>
                       </div>
                     )}
@@ -228,7 +239,7 @@ export default function AdminSiteContent() {
                   <div className="flex flex-col gap-2">
                     {contentData.editorialImg2 && (
                       <div className="relative">
-                        <img src={contentData.editorialImg2} className="w-full h-24 object-cover rounded-lg border border-[#333333]" />
+                        <img src={getImageUrl(contentData.editorialImg2)} className="w-full h-24 object-cover rounded-lg border border-[#333333]" />
                         <button type="button" onClick={() => handleChange('editorialImg2', '')} className="absolute top-2 right-2 bg-black/60 hover:bg-red-500 text-white rounded p-1 text-[9px] uppercase font-bold tracking-widest transition-colors backdrop-blur-md">Remove</button>
                       </div>
                     )}
@@ -240,7 +251,7 @@ export default function AdminSiteContent() {
                   <div className="flex flex-col gap-2">
                     {contentData.editorialImg3 && (
                       <div className="relative">
-                        <img src={contentData.editorialImg3} className="w-full h-24 object-cover rounded-lg border border-[#333333]" />
+                        <img src={getImageUrl(contentData.editorialImg3)} className="w-full h-24 object-cover rounded-lg border border-[#333333]" />
                         <button type="button" onClick={() => handleChange('editorialImg3', '')} className="absolute top-2 right-2 bg-black/60 hover:bg-red-500 text-white rounded p-1 text-[9px] uppercase font-bold tracking-widest transition-colors backdrop-blur-md">Remove</button>
                       </div>
                     )}
@@ -269,7 +280,7 @@ export default function AdminSiteContent() {
                 <div className="flex items-center gap-4">
                   {contentData.atelierImage && (
                     <div className="flex flex-col items-center gap-1">
-                      <img src={contentData.atelierImage} alt="Atelier preview" className="w-16 h-16 object-cover rounded-lg border border-[#333333]" />
+                      <img src={getImageUrl(contentData.atelierImage)} alt="Atelier preview" className="w-16 h-16 object-cover rounded-lg border border-[#333333]" />
                       <button type="button" onClick={() => handleChange('atelierImage', '')} className="text-[10px] text-red-500 hover:text-red-400 uppercase tracking-widest font-bold">Remove</button>
                     </div>
                   )}
@@ -323,7 +334,7 @@ export default function AdminSiteContent() {
                   <div className="flex flex-col gap-2">
                     {contentData.showroomImg1 && (
                       <div className="relative">
-                        <img src={contentData.showroomImg1} className="w-full h-24 object-cover rounded-lg border border-[#333333]" />
+                        <img src={getImageUrl(contentData.showroomImg1)} className="w-full h-24 object-cover rounded-lg border border-[#333333]" />
                         <button type="button" onClick={() => handleChange('showroomImg1', '')} className="absolute top-2 right-2 bg-black/60 hover:bg-red-500 text-white rounded p-1 text-[9px] uppercase font-bold tracking-widest transition-colors backdrop-blur-md">Remove</button>
                       </div>
                     )}
@@ -338,7 +349,7 @@ export default function AdminSiteContent() {
                   <div className="flex flex-col gap-2">
                     {contentData.showroomImg2 && (
                       <div className="relative">
-                        <img src={contentData.showroomImg2} className="w-full h-24 object-cover rounded-lg border border-[#333333]" />
+                        <img src={getImageUrl(contentData.showroomImg2)} className="w-full h-24 object-cover rounded-lg border border-[#333333]" />
                         <button type="button" onClick={() => handleChange('showroomImg2', '')} className="absolute top-2 right-2 bg-black/60 hover:bg-red-500 text-white rounded p-1 text-[9px] uppercase font-bold tracking-widest transition-colors backdrop-blur-md">Remove</button>
                       </div>
                     )}
@@ -353,7 +364,7 @@ export default function AdminSiteContent() {
                   <div className="flex flex-col gap-2">
                     {contentData.showroomImg3 && (
                       <div className="relative">
-                        <img src={contentData.showroomImg3} className="w-full h-24 object-cover rounded-lg border border-[#333333]" />
+                        <img src={getImageUrl(contentData.showroomImg3)} className="w-full h-24 object-cover rounded-lg border border-[#333333]" />
                         <button type="button" onClick={() => handleChange('showroomImg3', '')} className="absolute top-2 right-2 bg-black/60 hover:bg-red-500 text-white rounded p-1 text-[9px] uppercase font-bold tracking-widest transition-colors backdrop-blur-md">Remove</button>
                       </div>
                     )}
@@ -368,7 +379,7 @@ export default function AdminSiteContent() {
                   <div className="flex flex-col gap-2">
                     {contentData.showroomImg4 && (
                       <div className="relative">
-                        <img src={contentData.showroomImg4} className="w-full h-24 object-cover rounded-lg border border-[#333333]" />
+                        <img src={getImageUrl(contentData.showroomImg4)} className="w-full h-24 object-cover rounded-lg border border-[#333333]" />
                         <button type="button" onClick={() => handleChange('showroomImg4', '')} className="absolute top-2 right-2 bg-black/60 hover:bg-red-500 text-white rounded p-1 text-[9px] uppercase font-bold tracking-widest transition-colors backdrop-blur-md">Remove</button>
                       </div>
                     )}
@@ -437,7 +448,7 @@ export default function AdminSiteContent() {
                 <div className="flex items-center gap-4">
                   {contentData.storeImage && (
                     <div className="flex flex-col items-center gap-1">
-                      <img src={contentData.storeImage} alt="Store preview" className="w-16 h-16 object-cover rounded-lg border border-[#333333]" />
+                      <img src={getImageUrl(contentData.storeImage)} alt="Store preview" className="w-16 h-16 object-cover rounded-lg border border-[#333333]" />
                       <button type="button" onClick={() => handleChange('storeImage', '')} className="text-[10px] text-red-500 hover:text-red-400 uppercase tracking-widest font-bold">Remove</button>
                     </div>
                   )}
@@ -469,7 +480,7 @@ export default function AdminSiteContent() {
                 <div className="flex items-center gap-4">
                   {contentData.imageUrl && (
                     <div className="flex flex-col items-center gap-1">
-                      <img src={contentData.imageUrl} alt="Hero preview" className="w-16 h-16 object-cover rounded-lg border border-[#333333]" />
+                      <img src={getImageUrl(contentData.imageUrl)} alt="Hero preview" className="w-16 h-16 object-cover rounded-lg border border-[#333333]" />
                       <button type="button" onClick={() => handleChange('imageUrl', '')} className="text-[10px] text-red-500 hover:text-red-400 uppercase tracking-widest font-bold">Remove</button>
                     </div>
                   )}
@@ -533,6 +544,64 @@ export default function AdminSiteContent() {
                 <div>
                   <label className="block text-xs text-gray-400 font-bold uppercase tracking-widest mb-2">Inquiry Description</label>
                   <input type="text" value={contentData.inquiryDesc || ''} onChange={(e) => handleChange('inquiryDesc', e.target.value)} className="w-full bg-[#000000] border border-[#333333] rounded-xl px-4 py-2 text-white text-sm focus:border-[#D4AF37] focus:outline-none" required />
+                </div>
+              </div>
+            </>
+          )}
+
+          {activeTab === 'about' && (
+            <>
+              <h3 className="text-[#D4AF37] font-bold text-lg mb-2 border-b border-[#333333] pb-2">Hero Section</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs text-gray-400 font-bold uppercase tracking-widest mb-2">Hero Tag</label>
+                  <input type="text" value={contentData.heroTag || ''} onChange={(e) => handleChange('heroTag', e.target.value)} className="w-full bg-[#000000] border border-[#333333] rounded-xl px-4 py-3 text-white focus:border-[#D4AF37] focus:outline-none" required />
+                </div>
+                <div>
+                  <label className="block text-xs text-gray-400 font-bold uppercase tracking-widest mb-2">Hero Title</label>
+                  <input type="text" value={contentData.heroTitle || ''} onChange={(e) => handleChange('heroTitle', e.target.value)} className="w-full bg-[#000000] border border-[#333333] rounded-xl px-4 py-3 text-white focus:border-[#D4AF37] focus:outline-none" required />
+                </div>
+                <div className="md:col-span-2">
+                  <label className="block text-xs text-gray-400 font-bold uppercase tracking-widest mb-2">Hero Description</label>
+                  <textarea rows="3" value={contentData.heroDesc || ''} onChange={(e) => handleChange('heroDesc', e.target.value)} className="w-full bg-[#000000] border border-[#333333] rounded-xl px-4 py-3 text-white focus:border-[#D4AF37] focus:outline-none" required />
+                </div>
+              </div>
+
+              <div className="pt-4 border-t border-[#333333] mt-8">
+                <h3 className="text-[#D4AF37] font-bold text-lg mb-2 border-b border-[#333333] pb-2">Gallery Images</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs text-gray-400 font-bold uppercase tracking-widest mb-2">Image 1 (Landscape)</label>
+                    <div className="flex items-center gap-4">
+                      {contentData.img1 && (
+                        <img src={getImageUrl(contentData.img1)} alt="Preview" className="w-16 h-16 object-cover rounded-lg border border-[#333333]" />
+                      )}
+                      <input type="file" onChange={(e) => handleImageUpload(e, 'img1')} className="text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:bg-[#333] file:text-white hover:file:bg-[#444]" />
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-xs text-gray-400 font-bold uppercase tracking-widest mb-2">Image 2 (Portrait)</label>
+                    <div className="flex items-center gap-4">
+                      {contentData.img2 && (
+                        <img src={getImageUrl(contentData.img2)} alt="Preview" className="w-16 h-16 object-cover rounded-lg border border-[#333333]" />
+                      )}
+                      <input type="file" onChange={(e) => handleImageUpload(e, 'img2')} className="text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:bg-[#333] file:text-white hover:file:bg-[#444]" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="pt-4 border-t border-[#333333] mt-8">
+                <h3 className="text-[#D4AF37] font-bold text-lg mb-2">Philosophy Quote</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="md:col-span-2">
+                    <label className="block text-xs text-gray-400 font-bold uppercase tracking-widest mb-2">Quote Text</label>
+                    <textarea rows="3" value={contentData.quoteText || ''} onChange={(e) => handleChange('quoteText', e.target.value)} className="w-full bg-[#000000] border border-[#333333] rounded-xl px-4 py-3 text-white focus:border-[#D4AF37] focus:outline-none" required />
+                  </div>
+                  <div className="md:col-span-2">
+                    <label className="block text-xs text-gray-400 font-bold uppercase tracking-widest mb-2">Quote Author</label>
+                    <input type="text" value={contentData.quoteAuthor || ''} onChange={(e) => handleChange('quoteAuthor', e.target.value)} className="w-full bg-[#000000] border border-[#333333] rounded-xl px-4 py-3 text-white focus:border-[#D4AF37] focus:outline-none" required />
+                  </div>
                 </div>
               </div>
             </>

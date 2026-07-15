@@ -143,30 +143,7 @@ export default function ProductDetailPage() {
             {/* ── Left: Image Gallery ── */}
             <div className="flex flex-col gap-4">
 
-              {/* Image View Toggle */}
-              <div className="flex gap-4">
-                <button 
-                  onClick={() => setViewMode('2d')} 
-                  className={`text-[10px] font-bold tracking-widest uppercase pb-1 border-b-2 transition-colors ${viewMode === '2d' ? 'border-[#D4AF37] text-[#D4AF37]' : 'border-transparent text-gray-500 hover:text-white'}`}
-                >
-                  Gallery
-                </button>
-                <button 
-                  onClick={() => setViewMode('3d')} 
-                  className={`text-[10px] font-bold tracking-widest uppercase pb-1 border-b-2 transition-colors flex items-center gap-1 ${viewMode === '3d' ? 'border-[#D4AF37] text-[#D4AF37]' : 'border-transparent text-gray-500 hover:text-white'}`}
-                >
-                  <Box size={12}/> 3D View
-                </button>
-                <button 
-                  onClick={() => setShowTryOn(true)} 
-                  className={`ml-auto text-[10px] font-bold tracking-widest uppercase pb-1 border-b-2 border-transparent text-[#D4AF37] hover:text-white transition-colors flex items-center gap-1`}
-                >
-                  <Camera size={12}/> Virtual Try-On
-                </button>
-              </div>
-
-              {/* Main Image with Zoom effect or 3D viewer */}
-              {viewMode === '2d' ? (
+              {/* Main Image with Zoom effect */}
                 <div 
                   className="relative overflow-hidden rounded-2xl bg-[#111111] aspect-square cursor-crosshair group"
                 onMouseMove={handleMouseMove}
@@ -195,11 +172,7 @@ export default function ProductDetailPage() {
                   </span>
                 )}
               </div>
-              ) : (
-                <div className="relative overflow-hidden rounded-2xl bg-[#111111] aspect-square">
-                  <Product3DViewer image={currentImage} />
-                </div>
-              )}
+
 
               {/* Thumbnail Strip */}
               {product.images && product.images.length > 0 && (

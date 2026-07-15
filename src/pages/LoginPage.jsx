@@ -3,6 +3,7 @@ import { useNavigate, Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { Eye, EyeOff, Mail, Lock, User, Phone } from 'lucide-react'
 import { motion } from 'framer-motion'
+import PageTransition from '../components/common/PageTransition'
 
 export default function LoginPage() {
   const { login, register } = useAuth()
@@ -49,6 +50,7 @@ export default function LoginPage() {
   }
 
   return (
+    <PageTransition>
     <div className="min-h-screen bg-[#0A0A0C] flex items-center justify-center p-4 relative overflow-hidden font-sans">
       
       {/* ── 3D Ambient Blur Orbs ── */}
@@ -311,5 +313,6 @@ export default function LoginPage() {
         </div>
       </motion.div>
     </div>
+    </PageTransition>
   )
 }
