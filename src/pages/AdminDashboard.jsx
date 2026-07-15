@@ -13,7 +13,8 @@ import {
   ChevronRight, 
   Settings, 
   LogOut,
-  FileText
+  FileText,
+  Mail
 } from 'lucide-react'
 
 import AdminProducts from './admin/AdminProducts'
@@ -21,6 +22,7 @@ import AdminOrders from './admin/AdminOrders'
 import AdminCustomers from './admin/AdminCustomers'
 import AdminSettings from './admin/AdminSettings'
 import AdminSiteContent from './admin/AdminSiteContent'
+import AdminEnquiries from './admin/AdminEnquiries'
 
 const NAV = [
   { key: 'dashboard',  label: 'Dashboard',  icon: LayoutDashboard },
@@ -28,6 +30,7 @@ const NAV = [
   { key: 'customers',  label: 'Customers',  icon: Users },
   { key: 'products',   label: 'Products',   icon: Package },
   { key: 'content',    label: 'Pages Content', icon: FileText },
+  { key: 'enquiries',  label: 'Enquiries',  icon: Mail },
   { key: 'settings',   label: 'Settings',   icon: Settings },
 ]
 
@@ -224,11 +227,14 @@ export default function AdminDashboard() {
           {/* Products View */}
           {page === 'products' && <AdminProducts products={products} onRefresh={loadData} />}
 
-          {/* Settings View */}
-          {page === 'settings' && <AdminSettings />}
-
           {/* Content View */}
           {page === 'content' && <AdminSiteContent />}
+          
+          {/* Enquiries View */}
+          {page === 'enquiries' && <AdminEnquiries />}
+
+          {/* Settings View */}
+          {page === 'settings' && <AdminSettings />}
         </div>
       </main>
     </div>

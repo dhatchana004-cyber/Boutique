@@ -13,7 +13,7 @@ export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false)
   const navigate = useNavigate()
   const { user, isLoggedIn, logout } = useAuth()
-  
+
   const [searchActive, setSearchActive] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
   const [visualSearchOpen, setVisualSearchOpen] = useState(false)
@@ -27,7 +27,7 @@ export default function Navbar() {
   return (
     <nav className="w-full bg-[#000000] sticky top-0 z-50 border-b border-[#FFFFFF]/5">
       <div className="max-w-7xl mx-auto px-6 py-5 flex items-center justify-between">
-        
+
         {/* Logo (Left) */}
         <div className="flex-shrink-0">
           <Link to="/" className="font-serif text-2xl md:text-3xl font-medium tracking-tight text-[#FFFFFF] hover:text-[#D4AF37] transition-colors">
@@ -53,13 +53,13 @@ export default function Navbar() {
 
         {/* Right Icons */}
         <div className="flex items-center justify-end gap-5">
-          
+
           {/* Inline Expanding Search Bar */}
           {searchActive ? (
             <div className="flex items-center gap-1 bg-[#FFFFFF]/5 border border-[#FFFFFF]/10 rounded-full px-4 py-1.5 w-[220px] md:w-[300px] transition-all duration-300">
-              <input 
-                type="text" 
-                placeholder="Search weaves, gifts..." 
+              <input
+                type="text"
+                placeholder="Search weaves, gifts..."
                 className="bg-transparent border-none outline-none text-[11px] font-sans w-full text-[#FFFFFF]"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
@@ -71,7 +71,7 @@ export default function Navbar() {
                 autoFocus
               />
               <VoiceSearch onResult={handleVoiceResult} />
-              <button 
+              <button
                 onClick={() => setVisualSearchOpen(true)}
                 className="p-1.5 text-[#FFFFFF]/60 hover:text-[#FFFFFF] transition-colors rounded-full"
                 title="Visual Search"
@@ -102,16 +102,16 @@ export default function Navbar() {
               </span>
             )}
           </Link>
-          
+
           {/* Profile Dropdown */}
           {isLoggedIn ? (
             <div className="relative group hidden sm:block">
               <button onClick={() => navigate('/account/profile')} className="text-[#FFFFFF] hover:text-[#D4AF37] transition-colors flex items-center p-1">
                 {user?.avatar ? (
-                  <img 
-                    src={user.avatar} 
-                    alt="Profile" 
-                    className="w-6 h-6 rounded-full object-cover border border-[#FFFFFF]/10 shadow-sm group-hover:border-[#D4AF37] transition-all" 
+                  <img
+                    src={user.avatar}
+                    alt="Profile"
+                    className="w-6 h-6 rounded-full object-cover border border-[#FFFFFF]/10 shadow-sm group-hover:border-[#D4AF37] transition-all"
                   />
                 ) : (
                   <User size={18} strokeWidth={1.5} />
@@ -168,30 +168,30 @@ export default function Navbar() {
           <Link to="/return-gifts" className="text-[11px] font-sans font-semibold tracking-[0.2em] uppercase text-[#FFFFFF]" onClick={() => setMenuOpen(false)}>Return Gifts</Link>
           <Link to="/about" className="text-[11px] font-sans font-semibold tracking-[0.2em] uppercase text-[#FFFFFF]" onClick={() => setMenuOpen(false)}>About</Link>
           <Link to="/contact" className="text-[11px] font-sans font-semibold tracking-[0.2em] uppercase text-[#FFFFFF]" onClick={() => setMenuOpen(false)}>Contact</Link>
-          
+
           {isLoggedIn ? (
-             <div className="pt-4 border-t border-[#FFFFFF]/5 flex flex-col gap-4">
-                <div className="flex items-center gap-2.5 px-1 py-1">
-                  {user?.avatar && (
-                    <img src={user.avatar} className="w-6 h-6 rounded-full object-cover border border-[#FFFFFF]/10" alt="" />
-                  )}
-                  <span className="text-xs font-serif text-[#FFFFFF]">{user?.name}</span>
-                </div>
-                <Link to="/account/profile" className="text-[11px] font-sans font-semibold tracking-[0.2em] uppercase text-[#D4AF37]" onClick={() => setMenuOpen(false)}>My Profile</Link>
-                <button onClick={() => { navigate('/account/profile', { state: { activeTab: 'membership' } }); setMenuOpen(false); }} className="text-left text-[11px] font-sans font-semibold tracking-[0.2em] uppercase text-[#D4AF37]">VIP Dashboard</button>
-                {user?.role === 'ADMIN' && (
-                  <button onClick={() => { navigate('/admin'); setMenuOpen(false); }} className="text-left text-[11px] font-sans font-semibold tracking-[0.2em] uppercase text-[#D4AF37]">Admin Panel</button>
+            <div className="pt-4 border-t border-[#FFFFFF]/5 flex flex-col gap-4">
+              <div className="flex items-center gap-2.5 px-1 py-1">
+                {user?.avatar && (
+                  <img src={user.avatar} className="w-6 h-6 rounded-full object-cover border border-[#FFFFFF]/10" alt="" />
                 )}
-                <button onClick={() => { logout(); setMenuOpen(false); navigate('/') }} className="text-left text-[11px] font-sans font-semibold tracking-[0.2em] uppercase text-red-500">Sign Out</button>
-             </div>
+                <span className="text-xs font-serif text-[#FFFFFF]">{user?.name}</span>
+              </div>
+              <Link to="/account/profile" className="text-[11px] font-sans font-semibold tracking-[0.2em] uppercase text-[#D4AF37]" onClick={() => setMenuOpen(false)}>My Profile</Link>
+              <button onClick={() => { navigate('/account/profile', { state: { activeTab: 'membership' } }); setMenuOpen(false); }} className="text-left text-[11px] font-sans font-semibold tracking-[0.2em] uppercase text-[#D4AF37]">VIP Dashboard</button>
+              {user?.role === 'ADMIN' && (
+                <button onClick={() => { navigate('/admin'); setMenuOpen(false); }} className="text-left text-[11px] font-sans font-semibold tracking-[0.2em] uppercase text-[#D4AF37]">Admin Panel</button>
+              )}
+              <button onClick={() => { logout(); setMenuOpen(false); navigate('/') }} className="text-left text-[11px] font-sans font-semibold tracking-[0.2em] uppercase text-red-500">Sign Out</button>
+            </div>
           ) : (
-             <div className="pt-4 border-t border-[#FFFFFF]/5">
-                <Link to="/login" className="text-[11px] font-sans font-semibold tracking-[0.2em] uppercase text-[#D4AF37]" onClick={() => setMenuOpen(false)}>Login</Link>
-             </div>
+            <div className="pt-4 border-t border-[#FFFFFF]/5">
+              <Link to="/login" className="text-[11px] font-sans font-semibold tracking-[0.2em] uppercase text-[#D4AF37]" onClick={() => setMenuOpen(false)}>Login</Link>
+            </div>
           )}
         </div>
       )}
-      
+
       <VisualSearchModal isOpen={visualSearchOpen} onClose={() => setVisualSearchOpen(false)} />
     </nav>
   )

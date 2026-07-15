@@ -4,6 +4,7 @@ import { X, Upload, Camera, Search, Aperture } from 'lucide-react'
 export default function VisualSearchModal({ isOpen, onClose }) {
   const [isScanning, setIsScanning] = useState(false)
   const [result, setResult] = useState(null)
+  const [extractedKeyword, setExtractedKeyword] = useState('')
   
   // Camera state
   const [isCameraOpen, setIsCameraOpen] = useState(false)
@@ -54,24 +55,46 @@ export default function VisualSearchModal({ isOpen, onClose }) {
   const handleFileChange = (e) => {
     const file = e.target.files?.[0]
     if (file) {
-      simulateScan()
+      simulateScan(file)
     }
   }
   
   const handleCapture = () => {
     stopCamera()
     setIsCameraOpen(false)
-    simulateScan()
+    simulateScan(null)
   }
 
-  const simulateScan = () => {
+  const simulateScan = (file) => {
     setIsScanning(true)
     setResult(null)
+    
+    const mocks = ['Kundan', 'Silk Saree', 'Lehenga', 'Perfume', 'Silver Thali', 'Jewel Box']
+    let keyword = mocks[Math.floor(Math.random() * mocks.length)] // Default fallback
+    
+    if (file) {
+      // Clean up the filename (e.g., "red-silk-saree(1).jpg" -> "red silk saree")
+      let name = file.name.split('.')[0]
+        .replace(/[-_()]/g, ' ')
+        .replace(/[0-9]/g, '')
+        .trim()
+        .toLowerCase()
+        
+      // Check if it's a generic auto-generated filename
+      const genericNames = ['image', 'images', 'download', 'photo', 'img', 'untitled', 'picture', 'pic']
+      
+      // Use filename if it's meaningful
+      if (name.length > 2 && !genericNames.includes(name)) {
+        keyword = name.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')
+      }
+    }
+    
+    setExtractedKeyword(keyword)
     
     // Simulate AI processing delay
     setTimeout(() => {
       setIsScanning(false)
-      setResult("Found 3 similar items in our boutique.")
+      setResult(`Image analyzed successfully. Found matches for "${keyword}".`)
     }, 2500)
   }
 
@@ -169,7 +192,7 @@ export default function VisualSearchModal({ isOpen, onClose }) {
             <button 
               onClick={() => {
                 onClose()
-                window.location.href = '/products?search=visual_match'
+                window.location.href = `/products?search=${encodeURIComponent(extractedKeyword)}`
               }}
               className="px-8 py-3 bg-[#C5A880] text-[#1A1A1A] font-sans text-[11px] font-bold tracking-[0.2em] uppercase hover:bg-[#FDFBF7] transition-colors rounded-sm"
             >

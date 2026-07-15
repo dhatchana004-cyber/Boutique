@@ -12,6 +12,7 @@ import {
   ExternalLink,
   ChevronDown
 } from 'lucide-react'
+import api from '../services/api'
 
 import { useSiteContent } from '../hooks/useSiteContent'
 
@@ -36,10 +37,18 @@ export default function ContactPage() {
     setFormData({ ...formData, [e.target.name]: e.target.value })
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    setIsSubmitted(true)
-    setFormData({ firstName: '', lastName: '', email: '', enquiryType: '', message: '' })
+    try {
+      const response = await api.post('/enquiries', formData)
+      if (response.data.success) {
+        setIsSubmitted(true)
+        setFormData({ firstName: '', lastName: '', email: '', enquiryType: '', message: '' })
+      }
+    } catch (error) {
+      console.error("Failed to submit enquiry:", error)
+      alert("Failed to submit enquiry. Please try again.")
+    }
   }
 
   const containerVariants = {
@@ -324,11 +333,11 @@ export default function ContactPage() {
                           required
                           className="w-full bg-transparent border-b border-[#FFFFFF]/15 py-3 text-sm font-sans text-[#FFFFFF] focus:outline-none focus:border-[#D4AF37] transition-colors appearance-none cursor-pointer pr-10"
                         >
-                          <option value="" disabled hidden>Please select</option>
-                          <option value="Personal Shopping">Boutique • Personal Shopping</option>
-                          <option value="Return Gifts Wedding">Return Gifts • Wedding</option>
-                          <option value="Return Gifts Corporate">Return Gifts • Corporate</option>
-                          <option value="Press Collaboration">Press & Collaboration</option>
+                          <option className="bg-[#111111] text-white" value="" disabled hidden>Please select</option>
+                          <option className="bg-[#111111] text-white" value="Personal Shopping">Boutique • Personal Shopping</option>
+                          <option className="bg-[#111111] text-white" value="Return Gifts Wedding">Return Gifts • Wedding</option>
+                          <option className="bg-[#111111] text-white" value="Return Gifts Corporate">Return Gifts • Corporate</option>
+                          <option className="bg-[#111111] text-white" value="Press Collaboration">Press & Collaboration</option>
                         </select>
                         <span className="absolute right-0 top-1/2 -translate-y-1/2 pointer-events-none text-[#D4AF37] w-4 h-4 flex items-center justify-center">
                           <ChevronDown className="w-4 h-4" />

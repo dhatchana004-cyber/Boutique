@@ -10,6 +10,11 @@ function ProfileOverview({ user, onUpdate, onAvatarUpload }) {
   const [uploading, setUploading] = useState(false)
   const [imgError, setImgError] = useState(false)
   const fileInputRef = useRef(null)
+  
+  useEffect(() => {
+    setImgError(false)
+  }, [user?.avatar])
+
   const [form, setForm] = useState({
     name: user?.name || '',
     email: user?.email || '',
@@ -976,6 +981,10 @@ export default function UserProfilePage() {
   const [activeTab, setActiveTab] = useState('profile')
   const [sidebarImgError, setSidebarImgError] = useState(false)
 
+  useEffect(() => {
+    setSidebarImgError(false)
+  }, [user?.avatar])
+
   // Honour incoming tab request from sidebar links on other pages
   useEffect(() => {
     const requested = location.state?.activeTab
@@ -1075,7 +1084,10 @@ export default function UserProfilePage() {
 
               <div className="mt-8 pt-8 border-t border-white/10">
                  <button 
-                   onClick={logout}
+                   onClick={() => {
+                     logout();
+                     navigate('/');
+                   }}
                    className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-sm font-bold text-red-400 hover:bg-red-400/10 hover:text-red-300 transition-colors border border-transparent hover:border-red-400/20"
                  >
                    Sign Out

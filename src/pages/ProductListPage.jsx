@@ -47,12 +47,12 @@ export default function ProductListPage() {
         if (res.success && res.data) {
           let list = [...res.data]
           // Apply client-side sorting if needed to ensure correct behavior
-          if (activeSort === 'low-to-high') {
+          if (activeSort === 'price-asc') {
             list.sort((a, b) => a.price - b.price)
-          } else if (activeSort === 'high-to-low') {
+          } else if (activeSort === 'price-desc') {
             list.sort((a, b) => b.price - a.price)
           } else if (activeSort === 'newest') {
-            list.sort((a, b) => (b.isNew ? 1 : 0) - (a.isNew ? 1 : 0))
+            list.sort((a, b) => (b.isNew ? -1 : 1))
           }
           setProducts(list)
         }
@@ -91,7 +91,8 @@ export default function ProductListPage() {
       <PageTransition><div className="min-h-screen bg-[#000000] pb-24">
       
       {/* ── Top Header Banner (Burgundy Theme) ── */}
-      <div className="max-w-7xl mx-auto px-6 pt-8 pb-4">
+      {(!searchQuery && activeCategory === 'all') && (
+        <div className="max-w-7xl mx-auto px-6 pt-8 pb-4">
         <div className="bg-[#111111] border border-[#D4AF37]/30 text-[#FFFFFF] rounded-3xl p-8 md:p-12 relative overflow-hidden shadow-[0_0_30px_rgba(212,175,55,0.05)] flex flex-col justify-center min-h-[220px]">
           <div className="absolute top-0 right-0 w-64 h-64 bg-[#D4AF37]/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
           <div className="absolute bottom-0 left-0 w-64 h-64 bg-[#D4AF37]/5 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
@@ -108,11 +109,13 @@ export default function ProductListPage() {
             </p>
           </div>
         </div>
-      </div>
+        </div>
+      )}
 
       {/* ── Showroom Gallery Section ── */}
-      <div className="max-w-7xl mx-auto px-6 mt-10">
-        <div className="bg-[#000000] border border-[#D4AF37]/30 rounded-3xl p-6 md:p-8 shadow-[0_0_30px_rgba(212,175,55,0.03)]">
+      {(!searchQuery && activeCategory === 'all') && (
+        <div className="max-w-7xl mx-auto px-6 mt-10">
+          <div className="bg-[#000000] border border-[#D4AF37]/30 rounded-3xl p-6 md:p-8 shadow-[0_0_30px_rgba(212,175,55,0.03)]">
           <div className="max-w-xl mb-6">
             <span className="text-[10px] font-sans font-bold tracking-[0.3em] text-[#D4AF37] uppercase block mb-2">
               {content.atelierTag}
@@ -152,10 +155,11 @@ export default function ProductListPage() {
             </div>
           </div>
         </div>
-      </div>
+        </div>
+      )}
 
       {/* ── Main Workspace: Sidebar & Grid ── */}
-      <div className="max-w-7xl mx-auto px-6 mt-12">
+      <div className={`max-w-7xl mx-auto px-6 ${(!searchQuery && activeCategory === 'all') ? 'mt-12' : 'pt-8'}`}>
         <div className="flex flex-col lg:flex-row gap-12">
           
           {/* Left Column: Sidebar Filters */}
@@ -216,8 +220,8 @@ export default function ProductListPage() {
                   className="bg-[#000000] border border-[#444444] rounded-xl px-4 py-2.5 text-xs font-sans font-semibold text-[#FFFFFF] focus:outline-none focus:border-[#D4AF37] cursor-pointer"
                 >
                   <option value="featured">Featured Masterpieces</option>
-                  <option value="low-to-high">Price: Low to High</option>
-                  <option value="high-to-low">Price: High to Low</option>
+                  <option value="price-asc">Price: Low to High</option>
+                  <option value="price-desc">Price: High to Low</option>
                   <option value="newest">New Arrivals</option>
                 </select>
               </div>
