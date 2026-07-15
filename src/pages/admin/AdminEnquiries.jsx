@@ -8,6 +8,7 @@ export default function AdminEnquiries() {
   const [loading, setLoading] = useState(true)
   const [expandedId, setExpandedId] = useState(null)
   const [notification, setNotification] = useState(null) // { message: string, type: 'error' | 'success' }
+  const [deleteConfirmId, setDeleteConfirmId] = useState(null)
 
   useEffect(() => {
     loadEnquiries()
@@ -36,8 +37,7 @@ export default function AdminEnquiries() {
     }
   }
 
-  const handleDelete = async (id) => {
-    if (!window.confirm('Are you sure you want to delete this enquiry? This cannot be undone.')) return;
+  const executeDelete = async (id) => {
     try {
       await adminService.deleteEnquiry(id)
       setEnquiries(enquiries.filter(e => e.id !== id))
@@ -45,7 +45,13 @@ export default function AdminEnquiries() {
     } catch (err) {
       console.error(err)
       setNotification({ message: 'Failed to delete enquiry', type: 'error' })
+    } finally {
+      setDeleteConfirmId(null)
     }
+  }
+
+  const handleDeleteClick = (id) => {
+    setDeleteConfirmId(id)
   }
 
   const filteredEnquiries = enquiries.filter(enq => 
@@ -153,7 +159,7 @@ export default function AdminEnquiries() {
                          <button onClick={() => toggleExpand(enq.id, enq.status)} className="p-2 text-gray-400 hover:text-white transition-colors bg-[#222] rounded-lg">
                             {expandedId === enq.id ? <ChevronUp size={16} /> : (enq.status === 'UNREAD' ? <Mail size={16} className="text-[#D4AF37]" /> : <MailOpen size={16} />)}
                          </button>
-                         <button onClick={() => handleDelete(enq.id)} className="p-2 text-gray-400 hover:text-red-400 transition-colors bg-[#222] rounded-lg" title="Delete Enquiry">
+                         <button onClick={() => handleDeleteClick(enq.id)} className="p-2 text-gray-400 hover:text-red-400 transition-colors bg-[#222] rounded-lg" title="Delete Enquiry">
                             <Trash2 size={16} />
                          </button>
                        </div>
@@ -231,6 +237,33 @@ export default function AdminEnquiries() {
             >
               OK
             </button>
+          </div>
+        </div>
+      )}
+
+      {/* Custom Confirmation Modal */}
+      {deleteConfirmId && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
+          <div className="bg-[#111111] w-full max-w-sm rounded-2xl border border-[#333333] shadow-2xl overflow-hidden p-6 text-center animate-slide-up">
+            <div className="w-12 h-12 rounded-full mx-auto flex items-center justify-center mb-4 bg-red-500/10 text-red-500">
+              <Trash2 size={24} />
+            </div>
+            <h3 className="text-lg font-bold text-white mb-2">Delete Enquiry?</h3>
+            <p className="text-sm text-gray-400 mb-6">Are you sure you want to delete this enquiry? This action cannot be undone.</p>
+            <div className="flex gap-3">
+              <button 
+                onClick={() => setDeleteConfirmId(null)}
+                className="flex-1 py-3 bg-[#222] text-white font-bold uppercase tracking-wider text-xs rounded-xl hover:bg-[#333] transition-colors"
+              >
+                Cancel
+              </button>
+              <button 
+                onClick={() => executeDelete(deleteConfirmId)}
+                className="flex-1 py-3 bg-red-500/20 text-red-500 hover:bg-red-500 hover:text-white font-bold uppercase tracking-wider text-xs rounded-xl transition-colors"
+              >
+                Delete
+              </button>
+            </div>
           </div>
         </div>
       )}
