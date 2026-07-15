@@ -28,4 +28,5 @@ export const adminService = {
   // Enquiries
   getEnquiries: async () => (await api.get('/enquiries')).data,
   updateEnquiryStatus: async (id, status) => (await api.put(`/enquiries/${id}`, { status })).data,
+  deleteEnquiry: async (id) => (await api.delete(`/enquiries/${id}`)).data,
 }

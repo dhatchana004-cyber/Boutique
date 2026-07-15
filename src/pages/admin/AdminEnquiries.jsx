@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { adminService } from '../../services/adminService'
-import { Search, MailOpen, Mail, Send, ChevronDown, ChevronUp, CheckCircle } from 'lucide-react'
+import { Search, MailOpen, Mail, Send, ChevronDown, ChevronUp, CheckCircle, Trash2 } from 'lucide-react'
 
 export default function AdminEnquiries() {
   const [enquiries, setEnquiries] = useState([])
@@ -32,6 +32,17 @@ export default function AdminEnquiries() {
     } catch (err) {
       console.error(err)
       alert('Failed to update status')
+    }
+  }
+
+  const handleDelete = async (id) => {
+    if (!window.confirm('Are you sure you want to delete this enquiry? This cannot be undone.')) return;
+    try {
+      await adminService.deleteEnquiry(id)
+      setEnquiries(enquiries.filter(e => e.id !== id))
+    } catch (err) {
+      console.error(err)
+      alert('Failed to delete enquiry')
     }
   }
 
@@ -136,9 +147,14 @@ export default function AdminEnquiries() {
                       </select>
                     </td>
                     <td className="p-4 text-right">
-                       <button onClick={() => toggleExpand(enq.id, enq.status)} className="p-2 text-gray-400 hover:text-white transition-colors bg-[#222] rounded-lg">
-                          {expandedId === enq.id ? <ChevronUp size={16} /> : (enq.status === 'UNREAD' ? <Mail size={16} className="text-[#D4AF37]" /> : <MailOpen size={16} />)}
-                       </button>
+                       <div className="flex items-center justify-end gap-2">
+                         <button onClick={() => toggleExpand(enq.id, enq.status)} className="p-2 text-gray-400 hover:text-white transition-colors bg-[#222] rounded-lg">
+                            {expandedId === enq.id ? <ChevronUp size={16} /> : (enq.status === 'UNREAD' ? <Mail size={16} className="text-[#D4AF37]" /> : <MailOpen size={16} />)}
+                         </button>
+                         <button onClick={() => handleDelete(enq.id)} className="p-2 text-gray-400 hover:text-red-400 transition-colors bg-[#222] rounded-lg" title="Delete Enquiry">
+                            <Trash2 size={16} />
+                         </button>
+                       </div>
                     </td>
                   </tr>
                 ))}

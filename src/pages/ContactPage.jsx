@@ -25,6 +25,7 @@ export default function ContactPage() {
     message: ''
   })
   const [isSubmitted, setIsSubmitted] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
   
   const { content } = useSiteContent('contact', {
     headerTag: 'Get In Touch', headerTitle: 'Connect With Us', headerDesc: 'Whether you seek a bespoke bridal design, wish to explore corporate return gifts, or desire a personal boutique walkthrough, our concierge team is at your service.',
@@ -39,6 +40,8 @@ export default function ContactPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
+    if (isSubmitting) return;
+    setIsSubmitting(true)
     try {
       const response = await api.post('/enquiries', formData)
       if (response.data.success) {
@@ -48,6 +51,8 @@ export default function ContactPage() {
     } catch (error) {
       console.error("Failed to submit enquiry:", error)
       alert("Failed to submit enquiry. Please try again.")
+    } finally {
+      setIsSubmitting(false)
     }
   }
 
@@ -367,10 +372,11 @@ export default function ContactPage() {
 
                     <button
                       type="submit"
-                      className="mt-4 w-full bg-[#111111] text-white hover:bg-[#D4AF37] hover:text-[#FFFFFF] py-4 rounded-xl text-xs font-semibold tracking-[0.2em] uppercase transition-all duration-300 flex items-center justify-center gap-2 group shadow-md cursor-pointer"
+                      disabled={isSubmitting}
+                      className="mt-4 w-full bg-[#111111] text-white hover:bg-[#D4AF37] hover:text-[#FFFFFF] py-4 rounded-xl text-xs font-semibold tracking-[0.2em] uppercase transition-all duration-300 flex items-center justify-center gap-2 group shadow-md cursor-pointer disabled:opacity-70 disabled:cursor-not-allowed"
                     >
-                      Send Enquiry
-                      <Send className="w-3.5 h-3.5 group-hover:translate-x-1 group-hover:-translate-y-0.5 transition-transform" />
+                      {isSubmitting ? 'Sending...' : 'Send Enquiry'}
+                      {!isSubmitting && <Send className="w-3.5 h-3.5 group-hover:translate-x-1 group-hover:-translate-y-0.5 transition-transform" />}
                     </button>
                   </form>
                 </motion.div>
