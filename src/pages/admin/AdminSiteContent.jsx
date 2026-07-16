@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
 import { adminService } from '../../services/adminService';
 import { Save, Loader } from 'lucide-react';
-import { getSitePageContent, saveSiteContent } from '../../hooks/useSiteContent';
+import { saveLocalSiteContentUpdate } from '../../hooks/useSiteContent';
+import toast from 'react-hot-toast';
 
-const PAGES = ['home', 'boutique', 'return-gifts', 'about', 'contact'];
+const PAGES = ['home', 'boutique', 'return-gifts', 'about', 'contact', 'social'];
 
 export default function AdminSiteContent() {
   const [activeTab, setActiveTab] = useState('home');
@@ -21,24 +22,32 @@ export default function AdminSiteContent() {
     loadContent();
   }, [activeTab]);
 
-  const loadContent = () => {
+  const loadContent = async () => {
     setLoading(true);
     const defaults = getDefaults(activeTab);
-    const saved = getSitePageContent(activeTab);
     
-    if (saved && Object.keys(saved).length > 0) {
-      const merged = { ...defaults };
-      Object.keys(saved).forEach(key => {
-        if (saved[key] && typeof saved[key] === 'string' && saved[key].trim() !== '') {
-          merged[key] = saved[key];
-        } else if (saved[key] && typeof saved[key] !== 'string') {
-          merged[key] = saved[key];
-        }
-      });
-      setContentData(merged);
-    } else {
+    try {
+      const res = await adminService.getContent(activeTab);
+      const saved = res?.data || {};
+      
+      if (saved && Object.keys(saved).length > 0) {
+        const merged = { ...defaults };
+        Object.keys(saved).forEach(key => {
+          if (saved[key] && typeof saved[key] === 'string' && saved[key].trim() !== '') {
+            merged[key] = saved[key];
+          } else if (saved[key] && typeof saved[key] !== 'string') {
+            merged[key] = saved[key];
+          }
+        });
+        setContentData(merged);
+      } else {
+        setContentData(defaults);
+      }
+    } catch (err) {
+      console.error('Failed to load content', err);
       setContentData(defaults);
     }
+    
     setLoading(false);
   };
 
@@ -76,6 +85,11 @@ export default function AdminSiteContent() {
       img1: 'https://images.unsplash.com/photo-1607344645866-009c320b63e0?q=80&w=1200', img2: 'https://images.unsplash.com/photo-1549465220-1a8b9238cd48?q=80&w=800',
       quoteText: '"We don\'t just create garments; we weave stories of heritage, preserving the art of the loom for the modern connoisseur."', quoteAuthor: '— The Founders'
     };
+    if (page === 'social') return {
+      facebook: '',
+      instagram: '',
+      whatsapp: ''
+    };
     return {};
   };
 
@@ -95,23 +109,24 @@ export default function AdminSiteContent() {
       if (res.success && res.imageUrl) {
         handleChange(field, res.imageUrl);
       } else {
-        alert('Image upload failed');
+        toast.error('Image upload failed');
       }
     } catch (err) {
       console.error(err);
-      alert('Error uploading image');
+      toast.error('Error uploading image');
     }
   };
 
-  const handleSave = (e) => {
+  const handleSave = async (e) => {
     e.preventDefault();
     setSaving(true);
     try {
-      saveSiteContent(activeTab, contentData);
-      alert('Content updated successfully!');
+      await adminService.updateContent(activeTab, contentData);
+      saveLocalSiteContentUpdate(activeTab, contentData);
+      toast.success('Content updated successfully!');
     } catch (err) {
       console.error(err);
-      alert('Error saving content.');
+      toast.error('Error saving content.');
     }
     setSaving(false);
   };
@@ -602,6 +617,26 @@ export default function AdminSiteContent() {
                     <label className="block text-xs text-gray-400 font-bold uppercase tracking-widest mb-2">Quote Author</label>
                     <input type="text" value={contentData.quoteAuthor || ''} onChange={(e) => handleChange('quoteAuthor', e.target.value)} className="w-full bg-[#000000] border border-[#333333] rounded-xl px-4 py-3 text-white focus:border-[#D4AF37] focus:outline-none" required />
                   </div>
+                </div>
+              </div>
+            </>
+          )}
+
+          {activeTab === 'social' && (
+            <>
+              <h3 className="text-[#D4AF37] font-bold text-lg mb-2 border-b border-[#333333] pb-2">Social Media Links</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs text-gray-400 font-bold uppercase tracking-widest mb-2">Facebook Link</label>
+                  <input type="text" value={contentData.facebook || ''} onChange={(e) => handleChange('facebook', e.target.value)} className="w-full bg-[#000000] border border-[#333333] rounded-xl px-4 py-3 text-white focus:border-[#D4AF37] focus:outline-none" />
+                </div>
+                <div>
+                  <label className="block text-xs text-gray-400 font-bold uppercase tracking-widest mb-2">Instagram Link</label>
+                  <input type="text" value={contentData.instagram || ''} onChange={(e) => handleChange('instagram', e.target.value)} className="w-full bg-[#000000] border border-[#333333] rounded-xl px-4 py-3 text-white focus:border-[#D4AF37] focus:outline-none" />
+                </div>
+                <div className="md:col-span-2">
+                  <label className="block text-xs text-gray-400 font-bold uppercase tracking-widest mb-2">WhatsApp Number</label>
+                  <input type="text" value={contentData.whatsapp?.replace(/[^0-9]/g, '') || ''} onChange={(e) => handleChange('whatsapp', e.target.value.replace(/[^0-9]/g, ''))} className="w-full bg-[#000000] border border-[#333333] rounded-xl px-4 py-3 text-white focus:border-[#D4AF37] focus:outline-none" />
                 </div>
               </div>
             </>

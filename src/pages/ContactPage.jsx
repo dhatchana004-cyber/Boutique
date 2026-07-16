@@ -34,6 +34,17 @@ export default function ContactPage() {
     email: 'concierge@vedhika.co.in', hours: 'Mon - Sat: 10:00 AM - 8:00 PM\nSunday: By Appointment Only',
     formTitle: 'Send a Message', formDesc: 'Bespoke consultations and enquiries', storeImage: ''
   })
+  const { content: socialLinks } = useSiteContent('social', { whatsapp: '' })
+
+  const getWhatsappLink = (num) => {
+    if (!num) return ''
+    const strNum = String(num).trim();
+    if (strNum.startsWith('http')) return strNum;
+    let cleanNum = strNum.replace(/[^0-9]/g, '');
+    if (!cleanNum) return '';
+    if (cleanNum.length === 10) cleanNum = '91' + cleanNum;
+    return `https://wa.me/${cleanNum}?text=Hello%20Vedhika%20%26%20Co,%20I%20would%20like%20to%20enquire%20about%20your%20services.`;
+  }
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value })
@@ -160,7 +171,13 @@ export default function ContactPage() {
                     WhatsApp for bulk & bridal enquiries
                   </p>
                   <a 
-                    href="https://wa.me/919344149236?text=Hello%20Vedhika%20%26%20Co,%20I%20would%20like%20to%20enquire%20about%20your%20services." 
+                    href={getWhatsappLink(socialLinks.whatsapp) || '#'}
+                    onClick={(e) => {
+                      if (!getWhatsappLink(socialLinks.whatsapp)) {
+                        e.preventDefault();
+                        alert("Please configure your WhatsApp link/number in the Admin Panel (Social Tab) and click 'Save Changes'.");
+                      }
+                    }}
                     target="_blank" 
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-2 bg-[#D4AF37]/10 hover:bg-[#D4AF37] text-[#D4AF37] hover:text-white px-4 py-2 rounded-xl text-xs font-sans font-medium transition-all duration-300"
