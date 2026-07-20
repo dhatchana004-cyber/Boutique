@@ -7,7 +7,8 @@ export function AuthProvider({ children }) {
   const getAvatarUrl = (url, name) => {
     if (!url || url === 'null' || url.trim() === '') return `https://ui-avatars.com/api/?name=${encodeURIComponent(name || 'User')}&background=2B3FE7&color=fff`;
     if (url.startsWith('http') || url.startsWith('data:')) return url;
-    return `${import.meta.env.VITE_API_URL || 'http://localhost:5000'}${url}`;
+    const baseUrl = import.meta.env.VITE_API_URL || 'https://boutique-backend-7con.onrender.com';
+    return `${baseUrl}${url.startsWith('/') ? '' : '/'}${url}`;
   };
   const [user, setUser] = useState(() => {
     const saved = localStorage.getItem('luxe_user')
@@ -57,9 +58,7 @@ export function AuthProvider({ children }) {
 
   // Upload avatar — sends multipart/form-data
   const uploadAvatar = async (formData) => {
-    const res = await API.post('/auth/upload-avatar', formData, {
-      headers: { 'Content-Type': 'multipart/form-data' },
-    });
+    const res = await API.post('/auth/upload-avatar', formData);
     if (res.data.success) {
       const updatedUser = { ...user, avatar: getAvatarUrl(res.data.avatarUrl, user.name) };
       setUser(updatedUser);

@@ -65,7 +65,8 @@ export default function AdminCustomers({ customers, orders = [], onRefresh }) {
   const getAvatarUrl = (url) => {
     if (!url || url === 'null' || url.trim() === '') return '';
     if (url.startsWith('http') || url.startsWith('data:')) return url;
-    return `${import.meta.env.VITE_API_URL || 'http://localhost:5000'}${url}`;
+    const baseUrl = import.meta.env.VITE_API_URL || 'https://boutique-backend-7con.onrender.com';
+    return `${baseUrl}${url.startsWith('/') ? '' : '/'}${url}`;
   };
   const [confirm, setConfirm] = useState(null) // id to delete
   const [modal, setModal] = useState(null) // 'add' | customer obj for edit

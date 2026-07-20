@@ -88,9 +88,15 @@ export default function LoginPage() {
             display:flex;
             flex-direction:column;
             overflow-y: auto;
+            overflow-x: hidden;
+            overscroll-behavior: contain;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(201,162,75,0.5) transparent;
           }
-          .card::-webkit-scrollbar { width: 4px; }
-          .card::-webkit-scrollbar-thumb { background: rgba(201,162,75,0.35); border-radius: 4px; }
+          .card::-webkit-scrollbar { width: 8px; }
+          .card::-webkit-scrollbar-track { background: transparent; margin: 8px 0; }
+          .card::-webkit-scrollbar-thumb { background: rgba(201,162,75,0.5); border-radius: 8px; border: 2px solid var(--panel); }
+          .card::-webkit-scrollbar-thumb:hover { background: rgba(201,162,75,0.8); }
 
           .tabs{ display:flex; gap:0.781cqw; background:rgba(0,0,0,0.28); border:1px solid rgba(255,255,255,0.07); border-radius:0.781cqw; padding:0.488cqw; margin-bottom:2.148cqw; flex-shrink: 0; }
           .tabs button{ flex:1; padding:0.977cqw 0; border:none; border-radius:0.586cqw; background:transparent; color:var(--muted); font-family:'Cormorant Garamond', serif; font-size:1.66cqw; letter-spacing:0.03em; cursor:pointer; transition:all .25s ease; }

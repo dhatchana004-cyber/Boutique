@@ -120,7 +120,7 @@ export default function Navbar() {
                   <button onClick={() => navigate('/admin')} className="w-full text-left px-4 py-3 text-[11px] font-sans tracking-widest uppercase text-[#D4AF37] hover:text-[#FFFFFF] hover:bg-[#FFFFFF]/5">Admin Panel</button>
                 ) : (
                   <>
-                    <button onClick={() => navigate('/account/profile')} className="w-full text-left px-4 py-3 text-[11px] font-sans tracking-widest uppercase text-[#D4AF37] hover:text-[#FFFFFF] hover:bg-[#FFFFFF]/5">My Profile</button>
+                    <button onClick={() => navigate('/account/profile', { state: { activeTab: 'profile' } })} className="w-full text-left px-4 py-3 text-[11px] font-sans tracking-widest uppercase text-[#D4AF37] hover:text-[#FFFFFF] hover:bg-[#FFFFFF]/5">My Profile</button>
                     <button onClick={() => navigate('/account/profile', { state: { activeTab: 'membership' } })} className="w-full text-left px-4 py-3 text-[11px] font-sans tracking-widest uppercase text-[#D4AF37] hover:text-[#FFFFFF] hover:bg-[#FFFFFF]/5">VIP Dashboard</button>
                     <button onClick={() => navigate('/account/orders')} className="w-full text-left px-4 py-3 text-[11px] font-sans tracking-widest uppercase text-[#D4AF37] hover:text-[#FFFFFF] hover:bg-[#FFFFFF]/5">Order History</button>
                   </>
@@ -176,7 +176,7 @@ export default function Navbar() {
                 <button onClick={() => { navigate('/admin'); setMenuOpen(false); }} className="text-left text-[11px] font-sans font-semibold tracking-[0.2em] uppercase text-[#D4AF37]">Admin Panel</button>
               ) : (
                 <>
-                  <Link to="/account/profile" className="text-[11px] font-sans font-semibold tracking-[0.2em] uppercase text-[#D4AF37]" onClick={() => setMenuOpen(false)}>My Profile</Link>
+                  <button onClick={() => { navigate('/account/profile', { state: { activeTab: 'profile' } }); setMenuOpen(false); }} className="text-left text-[11px] font-sans font-semibold tracking-[0.2em] uppercase text-[#D4AF37]">My Profile</button>
                   <button onClick={() => { navigate('/account/profile', { state: { activeTab: 'membership' } }); setMenuOpen(false); }} className="text-left text-[11px] font-sans font-semibold tracking-[0.2em] uppercase text-[#D4AF37]">VIP Dashboard</button>
                 </>
               )}

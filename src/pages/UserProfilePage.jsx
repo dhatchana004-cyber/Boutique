@@ -47,7 +47,8 @@ function ProfileOverview({ user, onUpdate, onAvatarUpload }) {
   const getAvatarUrl = (url) => {
     if (!url || url === 'null' || url.trim() === '') return `https://ui-avatars.com/api/?name=${encodeURIComponent(user?.name || 'User')}&background=2B3FE7&color=fff`;
     if (url.startsWith('http') || url.startsWith('data:')) return url;
-    return `${import.meta.env.VITE_API_URL || 'http://localhost:5000'}${url}`;
+    const baseUrl = import.meta.env.VITE_API_URL || 'https://boutique-backend-7con.onrender.com';
+    return `${baseUrl}${url.startsWith('/') ? '' : '/'}${url}`;
   };
   const avatarUrl = getAvatarUrl(user?.avatar);
 
@@ -998,7 +999,7 @@ export default function UserProfilePage() {
       // Clear the state so a manual back-navigation doesn't re-trigger
       window.history.replaceState({}, '')
     }
-  }, []) // run once on mount
+  }, [location.state]) // run when location.state changes
 
   if (!isLoggedIn) {
     return (
