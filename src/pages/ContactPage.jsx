@@ -139,7 +139,7 @@ export default function ContactPage() {
                   <p>{content.address}</p>
                 </div>
                 <a 
-                  href="https://www.google.com/maps/search/?api=1&query=Vedhika+%26+Co+Nandhavanapatty+Old+Karur+Road+Dindigul" 
+                  href="https://www.google.com/maps/search/?api=1&query=Vedhika+Return+Gifts+and+wear+fashion,+Nandhavanappatty,+Dindigul" 
                   target="_blank" 
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-1.5 text-xs font-sans font-medium text-[#D4AF37] hover:text-[#FFFFFF] mt-4 transition-colors duration-300 group/link"
@@ -416,7 +416,7 @@ export default function ContactPage() {
               <img src={content.storeImage} alt="Store Location" className="w-full h-[450px] object-cover opacity-80 hover:opacity-100 transition-all duration-700" />
             ) : (
               <iframe 
-                src="https://maps.google.com/maps?q=Nandhavanapatty,%20Old%20Karur%20Road,%20Dindigul&t=&z=15&ie=UTF8&iwloc=&output=embed" 
+                src="https://maps.google.com/maps?q=Vedhika+Return+Gifts+and+wear+fashion,+Nandhavanappatty,+Dindigul&t=&z=15&ie=UTF8&iwloc=&output=embed" 
                 width="100%" 
                 height="450" 
                 style={{ border: 0 }} 
