@@ -49,6 +49,12 @@ export default function ProductCard({ product, variants }) {
     if (badges.length === 0 && product.price > 10000) {
       badges.push({ text: 'HERITAGE', type: 'accent' })
     }
+    
+    // Add sale badge if originalPrice is higher
+    if (product.originalPrice && product.originalPrice > product.price) {
+      const discount = Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)
+      badges.push({ text: `${discount}% OFF`, type: 'accent' })
+    }
     return badges
   }
 
@@ -86,7 +92,7 @@ export default function ProductCard({ product, variants }) {
               <span 
                 key={i} 
                 className={`text-[9px] font-sans font-bold tracking-widest px-3 py-1.5 rounded-sm uppercase
-                  ${b.type === 'dark' ? 'bg-[#111111] text-white border border-[#333333]' : 'bg-[#D4AF37] text-[#000000]'}`}
+                  ${b.type === 'dark' ? 'bg-[#111111] text-white border border-[#333333]' : (b.text.includes('% OFF') ? 'bg-red-600 text-white' : 'bg-[#D4AF37] text-[#000000]')}`}
               >
                 {b.text}
               </span>
@@ -135,15 +141,29 @@ export default function ProductCard({ product, variants }) {
             <span className="text-[10px] text-gray-500 ml-1">(124)</span>
           </div>
 
-          <h3 className="font-serif text-lg text-[#FFFFFF] mb-1.5 group-hover:text-[#D4AF37] transition-colors leading-tight">
+          <h3 className="font-serif text-lg text-[#FFFFFF] mb-1.5 group-hover:text-[#D4AF37] transition-colors leading-tight truncate">
             {product.name}
           </h3>
           <p className="font-sans text-[9px] tracking-[0.2em] uppercase text-[#D4AF37] mb-2 hidden md:block">
             {product.brand} · {product.category}
           </p>
-          <p className="font-sans text-sm font-bold text-white">
-            {formatCurrency(product.price)}
-          </p>
+          <div className="flex flex-col justify-center md:justify-start mt-1">
+            <div className="flex items-baseline gap-1.5">
+              <p className="font-sans text-sm font-bold text-white">
+                {formatCurrency(product.price)}
+              </p>
+              {product.originalPrice && product.originalPrice > product.price && (
+                <p className="font-sans text-[11px] text-gray-500 line-through decoration-gray-500/50">
+                  {formatCurrency(product.originalPrice)}
+                </p>
+              )}
+            </div>
+            {product.originalPrice && product.originalPrice > product.price && (
+              <p className="font-sans text-[11px] text-green-500 mt-0.5 font-bold">
+                Save {formatCurrency(product.originalPrice - product.price)}
+              </p>
+            )}
+          </div>
         </div>
       </CardWrapper>
 

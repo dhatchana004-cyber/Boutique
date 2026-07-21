@@ -3,7 +3,7 @@ import { Pencil, Trash2, Plus, Upload, List } from 'lucide-react'
 import { adminService } from '../../services/adminService'
 import { Modal, ConfirmDialog, InputField, SelectField } from './AdminUI'
 
-const EMPTY = { name:'', brand:'', category:'Sarees', price:'', description:'', image:'', stockQuantity:'', isNew:false }
+const EMPTY = { name:'', brand:'', category:'Sarees', price:'', originalPrice:'', description:'', image:'', stockQuantity:'', isNew:false }
 
 function CategoryModal({ categories, onClose, setCategories }) {
   const [list, setList] = useState(categories)
@@ -63,20 +63,25 @@ function ProductForm({ initial, onSave, onCancel, saving, categories }) {
   
   const set = (k,v) => setF(p=>({...p,[k]:v}))
 
-  const handleImageUpload = (e) => {
+  const handleImageUpload = async (e) => {
     const file = e.target.files?.[0]
     if (!file) return
     setUploading(true)
-    const reader = new FileReader()
-    reader.onloadend = () => {
-      set('image', reader.result)
+    try {
+      const formData = new FormData()
+      formData.append('image', file)
+      const res = await adminService.uploadImage(formData)
+      if (res.imageUrl) {
+        set('image', res.imageUrl)
+      } else {
+        alert("Failed to get image URL")
+      }
+    } catch (err) {
+      console.error(err)
+      alert("Failed to upload image")
+    } finally {
       setUploading(false)
     }
-    reader.onerror = () => {
-      alert("Failed to read image file")
-      setUploading(false)
-    }
-    reader.readAsDataURL(file)
   }
   return (
     <form onSubmit={e=>{e.preventDefault();onSave(f)}} className="space-y-4">
@@ -85,8 +90,9 @@ function ProductForm({ initial, onSave, onCancel, saving, categories }) {
         <InputField label="Brand" value={f.brand} onChange={e=>set('brand',e.target.value)} required />
         <SelectField label="Category" value={f.category} onChange={e=>set('category',e.target.value)} options={CATS} />
       </div>
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-3 gap-4">
         <InputField label="Price (₹)" type="number" value={f.price} onChange={e=>set('price',e.target.value)} required />
+        <InputField label="Original Price (₹)" type="number" value={f.originalPrice || ''} onChange={e=>set('originalPrice',e.target.value)} placeholder="For Offers" />
         <InputField label="Stock Qty" type="number" value={f.stockQuantity} onChange={e=>set('stockQuantity',e.target.value)} />
       </div>
       <div>

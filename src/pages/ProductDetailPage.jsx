@@ -217,9 +217,23 @@ export default function ProductDetailPage() {
               </div>
 
               {/* Price */}
-              <p className="text-3xl font-black text-[#D4AF37] mb-4">
-                {formatCurrency(product.price)}
-              </p>
+              <div className="flex flex-col mb-4">
+                <div className="flex items-baseline gap-3">
+                  <p className="text-3xl font-black text-[#D4AF37]">
+                    {formatCurrency(product.price)}
+                  </p>
+                  {product.originalPrice && product.originalPrice > product.price && (
+                    <p className="text-xl text-gray-500 line-through decoration-gray-500/50">
+                      {formatCurrency(product.originalPrice)}
+                    </p>
+                  )}
+                </div>
+                {product.originalPrice && product.originalPrice > product.price && (
+                  <p className="font-sans text-sm text-green-500 mt-1 font-bold tracking-wide">
+                    Save {formatCurrency(product.originalPrice - product.price)}
+                  </p>
+                )}
+              </div>
               
               {/* Urgency */}
               <div className="flex flex-col gap-2 mb-6">
