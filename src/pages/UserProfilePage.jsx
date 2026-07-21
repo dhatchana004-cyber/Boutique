@@ -37,7 +37,7 @@ function ProfileOverview({ user, onUpdate, onAvatarUpload }) {
       formData.append('avatar', file)
       await onAvatarUpload(formData)
     } catch (err) {
-      alert('Avatar upload failed. Please try again.')
+      toast.error('Avatar upload failed. Please try again.')
     } finally {
       setUploading(false)
       e.target.value = ''
@@ -1032,7 +1032,7 @@ export default function UserProfilePage() {
       console.log("Profile updated successfully in DB");
     } catch (error) {
       console.error("Failed to update profile:", error);
-      alert("Failed to save changes. Please try again.");
+      toast.error("Failed to save changes. Please try again.");
     }
   }
 

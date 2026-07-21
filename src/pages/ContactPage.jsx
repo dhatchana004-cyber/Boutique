@@ -13,6 +13,7 @@ import {
   ChevronDown
 } from 'lucide-react'
 import api from '../services/api'
+import toast from 'react-hot-toast'
 
 import { useSiteContent } from '../hooks/useSiteContent'
 
@@ -175,7 +176,7 @@ export default function ContactPage() {
                     onClick={(e) => {
                       if (!getWhatsappLink(socialLinks.whatsapp)) {
                         e.preventDefault();
-                        alert("Please configure your WhatsApp link/number in the Admin Panel (Social Tab) and click 'Save Changes'.");
+                        toast.error("Please configure your WhatsApp link in Admin Panel.");
                       }
                     }}
                     target="_blank" 

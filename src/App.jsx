@@ -69,7 +69,7 @@ function AppLayout() {
   return (
     <>
       <Toaster 
-        position="bottom-right" 
+        position="top-center" 
         toastOptions={{
           style: {
             background: '#111111',

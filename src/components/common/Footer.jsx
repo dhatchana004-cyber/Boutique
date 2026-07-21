@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import { MapPin, Phone, Mail } from 'lucide-react'
 import { useSiteContent } from '../../hooks/useSiteContent'
+import toast from 'react-hot-toast'
 
 export default function Footer() {
   const currentYear = new Date().getFullYear()
@@ -65,9 +66,9 @@ export default function Footer() {
                   key={label} 
                   href={href || '#'} 
                   onClick={(e) => {
-                    if (!href || href === '#') {
+                    if (!href) {
                       e.preventDefault();
-                      alert(`Please configure your ${label} link/number in the Admin Panel and click 'Save Changes'.`);
+                      toast.error(`Please configure your ${label} link in Admin Panel.`);
                     }
                   }}
                   target="_blank" 

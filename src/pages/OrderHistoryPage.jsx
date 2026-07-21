@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { orderService } from '../services/orderService'
+import toast from 'react-hot-toast'
 
 // ── Status config ──────────────────────────────────────
 const STATUS_CONFIG = {
@@ -9,9 +10,10 @@ const STATUS_CONFIG = {
   SHIPPED:    { label: 'In Transit',  color: 'bg-[#D4AF37]/10 text-[#D4AF37]',     dot: 'bg-[#D4AF37]'  },
   DELIVERED:  { label: 'Delivered',   color: 'bg-emerald-100 text-emerald-700', dot: 'bg-emerald-500' },
   CANCELLED:  { label: 'Cancelled',   color: 'bg-red-500/10 text-red-500',       dot: 'bg-red-500'   },
+  RETURNED:   { label: 'Returned',    color: 'bg-gray-500/10 text-gray-400',     dot: 'bg-gray-500'  },
 }
 
-const TABS = ['All', 'Processing', 'Shipped', 'Delivered', 'Cancelled']
+const TABS = ['All', 'Processing', 'Shipped', 'Delivered', 'Cancelled', 'Returned']
 
 // ── Tracking Progress Bar ──────────────────────────────
 function TrackingBar({ status }) {
@@ -47,7 +49,7 @@ function TrackingBar({ status }) {
 }
 
 // ── Order Card ─────────────────────────────────────────
-function OrderCard({ order, onCancel }) {
+function OrderCard({ order, onCancel, onReturn }) {
   const navigate    = useNavigate()
   const [open, setOpen] = useState(false)
   const status      = STATUS_CONFIG[order.status] || STATUS_CONFIG.PROCESSING
@@ -162,8 +164,11 @@ function OrderCard({ order, onCancel }) {
       <div className="border-t border-gray-50 px-5 py-3 flex items-center justify-between bg-[#111111]/50">
         <div className="flex items-center gap-4">
           {order.status === 'DELIVERED' && (
-            <button className="text-xs text-gray-500 hover:text-[#D4AF37] transition-colors
-              flex items-center gap-1 font-medium">
+            <button 
+              onClick={() => onReturn(order.id)}
+              className="text-xs text-gray-500 hover:text-[#D4AF37] transition-colors
+              flex items-center gap-1 font-medium"
+            >
               ↩ Return Item
             </button>
           )}
@@ -265,11 +270,28 @@ export default function OrderHistoryPage() {
       const res = await orderService.cancelOrder(orderId)
       if (res.success) {
         setOrders(prev => prev.map(o => o.id === orderId ? { ...o, status: 'CANCELLED' } : o))
+        toast.success('Order cancelled successfully')
       } else {
-        alert(res.message || 'Failed to cancel order')
+        toast.error(res.message || 'Failed to cancel order')
       }
     } catch (e) {
-      alert('Error cancelling order')
+      toast.error('Error cancelling order')
+    }
+  }
+
+  const handleReturnOrder = async (orderId) => {
+    if (!window.confirm('Are you sure you want to return this item?')) return
+    
+    try {
+      const res = await orderService.returnOrder(orderId)
+      if (res.success) {
+        setOrders(prev => prev.map(o => o.id === orderId ? { ...o, status: 'RETURNED' } : o))
+        toast.success('Return requested successfully')
+      } else {
+        toast.error(res.message || 'Failed to return order')
+      }
+    } catch (e) {
+      toast.error('Error returning order')
     }
   }
 
@@ -463,7 +485,7 @@ export default function OrderHistoryPage() {
             {!loading && !error && filtered.length > 0 && (
               <div className="flex flex-col gap-4">
                 {filtered.map(order => (
-                  <OrderCard key={order.id} order={order} onCancel={handleCancelOrder} />
+                  <OrderCard key={order.id} order={order} onCancel={handleCancelOrder} onReturn={handleReturnOrder} />
                 ))}
               </div>
             )}
