@@ -1,17 +1,28 @@
 import { useState } from 'react'
-import { ChevronRight, X } from 'lucide-react'
+import { ChevronRight, X, Trash2 } from 'lucide-react'
 import { adminService } from '../../services/adminService'
-import { STATUS_COLORS } from './AdminUI'
+import { STATUS_COLORS, ConfirmDialog } from './AdminUI'
 
 const STATUSES = ['PROCESSING','SHIPPED','DELIVERED','CANCELLED', 'RETURNED']
 
 export default function AdminOrders({ orders, onRefresh }) {
   const [selected, setSelected] = useState(null)
   const [editing, setEditing] = useState(null) // order id being edited
+  const [deleting, setDeleting] = useState(null)
 
   const handleStatus = async (id, status) => {
     try { await adminService.updateOrderStatus(id, status); setEditing(null); onRefresh() }
     catch(e) { console.error(e) }
+  }
+
+  const handleDelete = async () => {
+    try {
+      await adminService.deleteOrder(deleting.id)
+      setDeleting(null)
+      onRefresh()
+    } catch (e) {
+      console.error(e)
+    }
   }
 
   return (
@@ -59,7 +70,10 @@ export default function AdminOrders({ orders, onRefresh }) {
                     )}
                   </td>
                   <td className="px-6 py-4 text-xs text-gray-400">{new Date(o.createdAt).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'})}</td>
-                  <td className="px-6 py-4 cursor-pointer" onClick={()=>setSelected(o)}><ChevronRight size={16} className="text-gray-300"/></td>
+                  <td className="px-6 py-4 flex items-center justify-end gap-3">
+                    <Trash2 size={16} className="text-gray-500 hover:text-red-500 cursor-pointer" onClick={(e) => { e.stopPropagation(); setDeleting(o) }} />
+                    <ChevronRight size={16} className="text-gray-300 cursor-pointer" onClick={()=>setSelected(o)}/>
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -101,6 +115,14 @@ export default function AdminOrders({ orders, onRefresh }) {
             </div>
           </div>
         </div>
+      )}
+
+      {deleting && (
+        <ConfirmDialog
+          message={`Are you sure you want to delete order #${deleting.id}? This action cannot be undone.`}
+          onConfirm={handleDelete}
+          onCancel={() => setDeleting(null)}
+        />
       )}
     </>
   )

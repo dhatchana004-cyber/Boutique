@@ -13,7 +13,9 @@ export const adminService = {
   deleteProduct: async (id) => (await api.delete(`/admin/products/${id}`)).data,
 
   // Orders
-  updateOrderStatus: async (id, status) => (await api.patch(`/admin/orders/${id}/status`, { status })).data,
+
+  updateOrderStatus: async (id, status) => { const res = await api.patch(`/admin/orders/${id}/status`, { status }); return res.data },
+  deleteOrder: async (id) => { const res = await api.delete(`/admin/orders/${id}`); return res.data },
 
   // Customers
   createCustomer:     async (data) => (await api.post('/admin/customers', data)).data,
