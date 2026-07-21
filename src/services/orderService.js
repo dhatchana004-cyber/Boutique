@@ -15,6 +15,16 @@ export const orderService = {
     return res.data
   },
 
+  createCODOrder: async ({ cartItems, shippingInfo, shippingCost, tax }) => {
+    const res = await api.post('/payment/cod-order', {
+      cartItems,
+      shippingInfo,
+      shippingCost,
+      tax,
+    })
+    return res.data
+  },
+
   /**
    * POST /api/payment/verify
    * Sends Razorpay payment details to backend for HMAC verification.
@@ -44,6 +54,15 @@ export const orderService = {
    */
   cancelOrder: async (orderId) => {
     const res = await api.patch(`/payment/orders/${orderId}/cancel`)
+    return res.data
+  },
+
+  /**
+   * PATCH /api/payment/orders/:id/return
+   * Returns an order with status DELIVERED.
+   */
+  returnOrder: async (orderId) => {
+    const res = await api.patch(`/payment/orders/${orderId}/return`)
     return res.data
   },
 }

@@ -160,17 +160,6 @@ export default function CheckoutPage() {
         },
         theme: { color: '#D4AF37' },
 
-        // ── Enable payment methods (use integers — more reliable in test mode) ──
-        // Do NOT combine with config.display custom blocks — they conflict.
-        method: {
-          upi:        payment === 'bnpl' ? 0 : 1,
-          card:       payment === 'bnpl' ? 0 : 1,
-          netbanking: payment === 'bnpl' ? 0 : 1,
-          wallet:     payment === 'bnpl' ? 0 : 1,
-          emi:        payment === 'bnpl' ? 1 : 0,
-          paylater:   payment === 'bnpl' ? 1 : 0,
-        },
-
         // ── Success handler ──
         handler: async (response) => {
           try {
@@ -225,12 +214,38 @@ export default function CheckoutPage() {
 
   // ── COD Handler ───────────────────────────────────
   const handleCOD = async () => {
+    if (!isLoggedIn) {
+      showToast('Please log in to complete your purchase.', 'error')
+      return navigate('/login')
+    }
+    
     setLoading(true)
     try {
+      const cartPayload = isBuyNow
+        ? [{ productId: buyNowItem.productId, quantity: buyNowItem.quantity }]
+        : cartItems.map(item => ({
+            productId: item.productId || item.id,
+            quantity:  item.quantity,
+          }))
+
+      const orderRes = await orderService.createCODOrder({
+        cartItems:    cartPayload,
+        shippingInfo: info,
+        shippingCost,
+        tax,
+      })
+
+      if (!orderRes.success) {
+        showToast(orderRes.message || 'Failed to place order.', 'error')
+        setLoading(false)
+        return
+      }
+
       if (!isBuyNow) await clearCart()   // only clear cart in normal checkout
+      setPlacedOrderId(orderRes.data.dbOrderId)
       setOrderPlaced(true)
-    } catch {
-      showToast('Something went wrong. Please try again.', 'error')
+    } catch (err) {
+      showToast(err?.response?.data?.message || 'Something went wrong. Please try again.', 'error')
     } finally {
       setLoading(false)
     }
