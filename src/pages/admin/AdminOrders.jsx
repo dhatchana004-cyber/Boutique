@@ -3,7 +3,7 @@ import { ChevronRight, X } from 'lucide-react'
 import { adminService } from '../../services/adminService'
 import { STATUS_COLORS } from './AdminUI'
 
-const STATUSES = ['PROCESSING','SHIPPED','DELIVERED','CANCELLED']
+const STATUSES = ['PROCESSING','SHIPPED','DELIVERED','CANCELLED', 'RETURNED']
 
 export default function AdminOrders({ orders, onRefresh }) {
   const [selected, setSelected] = useState(null)

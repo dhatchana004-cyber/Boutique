@@ -53,4 +53,5 @@ export const STATUS_COLORS = {
   FAILED: 'bg-red-100 text-red-700', REFUNDED: 'bg-[#1A1A1A] text-gray-400',
   PROCESSING: 'bg-blue-100 text-blue-700', SHIPPED: 'bg-indigo-100 text-indigo-700',
   DELIVERED: 'bg-emerald-100 text-emerald-700', CANCELLED: 'bg-red-100 text-red-700',
+  RETURNED: 'bg-purple-100 text-purple-700',
 }
