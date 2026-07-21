@@ -263,36 +263,74 @@ export default function OrderHistoryPage() {
     }
   }
 
-  const handleCancelOrder = async (orderId) => {
-    if (!window.confirm('Are you sure you want to cancel this order?')) return
-    
-    try {
-      const res = await orderService.cancelOrder(orderId)
-      if (res.success) {
-        setOrders(prev => prev.map(o => o.id === orderId ? { ...o, status: 'CANCELLED' } : o))
-        toast.success('Order cancelled successfully')
-      } else {
-        toast.error(res.message || 'Failed to cancel order')
-      }
-    } catch (e) {
-      toast.error('Error cancelling order')
-    }
+  const handleCancelOrder = (orderId) => {
+    toast((t) => (
+      <div className="flex flex-col gap-3">
+        <p className="font-medium text-white text-sm">Are you sure you want to cancel this order?</p>
+        <div className="flex justify-end gap-3 mt-2">
+          <button 
+            className="px-4 py-2 text-xs font-bold uppercase tracking-widest text-gray-400 hover:text-white transition-colors"
+            onClick={() => toast.dismiss(t.id)}
+          >
+            No
+          </button>
+          <button 
+            className="px-4 py-2 text-xs font-bold uppercase tracking-widest bg-red-500/20 text-red-500 rounded-lg hover:bg-red-500 hover:text-white transition-colors"
+            onClick={async () => {
+              toast.dismiss(t.id);
+              try {
+                const res = await orderService.cancelOrder(orderId)
+                if (res.success) {
+                  setOrders(prev => prev.map(o => o.id === orderId ? { ...o, status: 'CANCELLED' } : o))
+                  toast.success('Order cancelled successfully')
+                } else {
+                  toast.error(res.message || 'Failed to cancel order')
+                }
+              } catch (e) {
+                toast.error(e.response?.data?.message || 'Error cancelling order')
+              }
+            }}
+          >
+            Yes, Cancel
+          </button>
+        </div>
+      </div>
+    ), { duration: Infinity, style: { background: '#111', border: '1px solid #333' } })
   }
 
-  const handleReturnOrder = async (orderId) => {
-    if (!window.confirm('Are you sure you want to return this item?')) return
-    
-    try {
-      const res = await orderService.returnOrder(orderId)
-      if (res.success) {
-        setOrders(prev => prev.map(o => o.id === orderId ? { ...o, status: 'RETURNED' } : o))
-        toast.success('Return requested successfully')
-      } else {
-        toast.error(res.message || 'Failed to return order')
-      }
-    } catch (e) {
-      toast.error('Error returning order')
-    }
+  const handleReturnOrder = (orderId) => {
+    toast((t) => (
+      <div className="flex flex-col gap-3">
+        <p className="font-medium text-white text-sm">Are you sure you want to return this item?</p>
+        <div className="flex justify-end gap-3 mt-2">
+          <button 
+            className="px-4 py-2 text-xs font-bold uppercase tracking-widest text-gray-400 hover:text-white transition-colors"
+            onClick={() => toast.dismiss(t.id)}
+          >
+            No
+          </button>
+          <button 
+            className="px-4 py-2 text-xs font-bold uppercase tracking-widest bg-[#D4AF37]/20 text-[#D4AF37] rounded-lg hover:bg-[#D4AF37] hover:text-black transition-colors"
+            onClick={async () => {
+              toast.dismiss(t.id);
+              try {
+                const res = await orderService.returnOrder(orderId)
+                if (res.success) {
+                  setOrders(prev => prev.map(o => o.id === orderId ? { ...o, status: 'RETURNED' } : o))
+                  toast.success('Return requested successfully')
+                } else {
+                  toast.error(res.message || 'Failed to return order')
+                }
+              } catch (e) {
+                toast.error(e.response?.data?.message || 'Error returning order')
+              }
+            }}
+          >
+            Yes, Return
+          </button>
+        </div>
+      </div>
+    ), { duration: Infinity, style: { background: '#111', border: '1px solid #333' } })
   }
 
   // ── Not logged in ──────────────────────────────────
