@@ -102,7 +102,10 @@ export default function AdminOrders({ orders, onRefresh }) {
                     <img src={item.product?.image} alt="" className="w-10 h-10 rounded-lg object-cover bg-[#1A1A1A]"/>
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-semibold truncate">{item.product?.name}</p>
-                      <p className="text-xs text-gray-400">{item.quantity} × ₹{item.price?.toLocaleString()}</p>
+                      <p className="text-xs text-gray-400">
+                        {item.quantity} × ₹{item.price?.toLocaleString()}
+                        {item.size ? ` • Size: ${item.size}` : ''}
+                      </p>
                     </div>
                     <p className="text-sm font-bold">₹{(item.quantity*item.price)?.toLocaleString()}</p>
                   </div>

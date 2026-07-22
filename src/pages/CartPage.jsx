@@ -61,6 +61,9 @@ export default function CartPage() {
                     {product.brand} · {product.category}
                   </p>
                   <p className="font-bold text-gray-100 text-sm mb-1">{product.name}</p>
+                  {item.size && (
+                    <p className="text-xs text-gray-400 mb-1">Size: {item.size}</p>
+                  )}
                   <p className="text-white font-black">{formatCurrency(product.price * item.quantity)}</p>
                   <p className="text-xs text-gray-500">{formatCurrency(product.price)} each</p>
                 </div>

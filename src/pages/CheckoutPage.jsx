@@ -121,10 +121,11 @@ export default function CheckoutPage() {
 
       // 2. Build items payload — Buy Now uses a single item, Cart uses all items
       const cartPayload = isBuyNow
-        ? [{ productId: buyNowItem.productId, quantity: buyNowItem.quantity }]
+        ? [{ productId: buyNowItem.productId, quantity: buyNowItem.quantity, size: buyNowItem.size }]
         : cartItems.map(item => ({
             productId: item.productId || item.id,
             quantity:  item.quantity,
+            size:      item.size,
           }))
 
       // 3. Create order on backend → get razorpayOrderId
@@ -150,7 +151,6 @@ export default function CheckoutPage() {
         currency:    'INR',
         name:        'Luxe Precision',
         description: 'Premium Shopping Experience',
-        image:       '/logo.png',
         order_id:    razorpayOrderId,
         prefill: {
           name:    `${info.firstName} ${info.lastName}`.trim(),
@@ -222,10 +222,11 @@ export default function CheckoutPage() {
     setLoading(true)
     try {
       const cartPayload = isBuyNow
-        ? [{ productId: buyNowItem.productId, quantity: buyNowItem.quantity }]
+        ? [{ productId: buyNowItem.productId, quantity: buyNowItem.quantity, size: buyNowItem.size }]
         : cartItems.map(item => ({
             productId: item.productId || item.id,
             quantity:  item.quantity,
+            size:      item.size,
           }))
 
       const orderRes = await orderService.createCODOrder({
@@ -564,6 +565,7 @@ export default function CheckoutPage() {
                 const image   = product.image ?? item.image
                 const name    = product.name  ?? item.name
                 const brand   = product.brand ?? item.brand
+                const size    = item.size
                 const key     = item.id ?? item.productId ?? idx
 
                 return (
@@ -579,7 +581,9 @@ export default function CheckoutPage() {
                     </div>
                     <div className="flex-1">
                       <p className="text-sm font-semibold text-gray-100">{name}</p>
-                      <p className="text-xs text-gray-400">{brand}</p>
+                      <p className="text-xs text-gray-400">
+                        {brand} {size ? ` • Size: ${size}` : ''}
+                      </p>
                     </div>
                     <p className="text-sm font-bold text-gray-100">
                       ₹{(price * item.quantity).toLocaleString()}.00

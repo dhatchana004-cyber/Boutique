@@ -77,6 +77,9 @@ export default function CartDrawer() {
                           <h3 className="font-serif text-[#FDFBF7] text-sm leading-tight max-w-[180px]">
                             {item.product?.name || item.name}
                           </h3>
+                          {item.size && (
+                            <p className="text-gray-400 text-xs mt-1">Size: {item.size}</p>
+                          )}
                         </div>
                         <button 
                           onClick={() => removeFromCart(item.id)}

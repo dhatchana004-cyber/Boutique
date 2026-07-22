@@ -5,8 +5,8 @@ export const cartService = {
     const response = await api.get('/cart');
     return response.data;
   },
-  addToCart: async (productId, quantity) => {
-    const response = await api.post('/cart', { productId, quantity });
+  addToCart: async (productId, quantity, size) => {
+    const response = await api.post('/cart', { productId, quantity, size });
     return response.data;
   },
   updateQuantity: async (itemId, quantity) => {

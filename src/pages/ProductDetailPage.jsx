@@ -32,6 +32,7 @@ export default function ProductDetailPage() {
   const { viewers, left, recentPurchases } = useRealTimeSim(12, 3)
   const [viewMode, setViewMode] = useState('2d')
   const [showTryOn, setShowTryOn] = useState(false)
+  const [selectedSize, setSelectedSize] = useState('')
 
   // Magnifier state
   const [mousePos, setMousePos] = useState({ x: 0, y: 0, show: false })
@@ -71,7 +72,12 @@ export default function ProductDetailPage() {
   }, [id])
 
   const handleAddToCart = () => {
-    addToCart(product, quantity)
+    if (!selectedSize) {
+      toast.error('Please select a size')
+      return
+    }
+    const productWithSize = { ...product, size: selectedSize }
+    addToCart(productWithSize, quantity)
     toast.success(`${product.name} added to cart`)
   }
 
@@ -260,10 +266,31 @@ export default function ProductDetailPage() {
               {/* Size Guide Trigger */}
               <button 
                 onClick={() => setShowSizeGuide(true)}
-                className="flex items-center gap-2 text-xs font-bold tracking-widest uppercase text-gray-400 hover:text-white transition-colors mb-8 w-fit"
+                className="flex items-center gap-2 text-xs font-bold tracking-widest uppercase text-gray-400 hover:text-white transition-colors mb-4 w-fit"
               >
                 <Ruler size={16} /> Size Guide
               </button>
+
+              {/* Size Selection */}
+              <div className="mb-8">
+                <p className="text-xs font-bold tracking-[0.2em] uppercase text-gray-100 mb-3">
+                  Select Size
+                </p>
+                <div className="flex flex-wrap gap-3">
+                  {['XS', 'S', 'M', 'L', 'XL'].map((size) => (
+                    <button
+                      key={size}
+                      onClick={() => setSelectedSize(size)}
+                      className={`w-12 h-12 flex items-center justify-center rounded-full text-sm font-bold transition-all border
+                        ${selectedSize === size 
+                          ? 'bg-[#D4AF37] text-[#000000] border-[#D4AF37]' 
+                          : 'bg-[#111111] text-gray-400 border-[#333333] hover:border-[#D4AF37] hover:text-white'}`}
+                    >
+                      {size}
+                    </button>
+                  ))}
+                </div>
+              </div>
 
               {/* Specs */}
               {product.specs && product.specs.length > 0 && (
@@ -323,18 +350,25 @@ export default function ProductDetailPage() {
                   Add to Cart
                 </button>
                 <button
-                  onClick={() => navigate('/checkout', {
-                    state: {
-                      buyNowItem: {
-                        productId: product.id,
-                        name:      product.name,
-                        brand:     product.brand,
-                        price:     product.price,
-                        image:     product.image,
-                        quantity,
-                      }
+                  onClick={() => {
+                    if (!selectedSize) {
+                      toast.error('Please select a size')
+                      return
                     }
-                  })}
+                    navigate('/checkout', {
+                      state: {
+                        buyNowItem: {
+                          productId: product.id,
+                          name:      product.name,
+                          brand:     product.brand,
+                          price:     product.price,
+                          image:     product.image,
+                          quantity,
+                          size:      selectedSize
+                        }
+                      }
+                    })
+                  }}
                   className="w-full py-4 border border-white/20 text-gray-100 
                     rounded-full font-bold text-sm tracking-widest uppercase
                     hover:border-white hover:text-white transition-all duration-300"

@@ -90,7 +90,7 @@ export function CartProvider({ children }) {
     try {
       for (const item of guestCartItems) {
         const productId = item.productId || item.id
-        await cartService.addToCart(productId, item.quantity)
+        await cartService.addToCart(productId, item.quantity, item.size)
       }
       localStorage.removeItem('luxe_guest_cart')
       fetchCart()
@@ -115,22 +115,25 @@ export function CartProvider({ children }) {
   const addToCart = async (product, quantity = 1) => {
     if (isLoggedIn) {
       try {
-        const res = await cartService.addToCart(product.id, quantity)
+        const res = await cartService.addToCart(product.id, quantity, product.size)
         if (res.success) setCartItems(res.data.items)
       } catch (error) {
         console.error('Error adding to cart:', error)
       }
     } else {
       setCartItems(prev => {
-        const existing = prev.find(item => (item.id === product.id || item.productId === product.id))
+        const existing = prev.find(item => 
+          (item.id === product.id || item.productId === product.id) && 
+          item.size === product.size
+        )
         if (existing) {
           return prev.map(item =>
-            (item.id === product.id || item.productId === product.id)
+            ((item.id === product.id || item.productId === product.id) && item.size === product.size)
               ? { ...item, quantity: item.quantity + quantity }
               : item
           )
         }
-        return [...prev, { ...product, productId: product.id, product, quantity }]
+        return [...prev, { ...product, productId: product.id, product, quantity, size: product.size }]
       })
     }
     setIsCartDrawerOpen(true)
